@@ -79,6 +79,12 @@
             display: none;
             font-family: 'Courier New', monospace;
         }
+        #altText {
+            font-style: italic;
+            font-size: 0.9rem;
+            color: #555;
+            margin-top: 0.5rem;
+        }
         .tooltip-inner {
             background-color: var(--secondary-color);
             color: white;
@@ -99,7 +105,7 @@
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" id="nsfwToggle" checked>
                         <label class="form-check-label" for="nsfwToggle">Enable NSFW Elements (Explicit Content)</label>
-                        <div class="nsfw-warning">Warning: NSFW options (e.g., explicit genitalia, tentacle fellatio, ghost sex) may not be compatible with platforms like PixAI. Check guidelines.</div>
+                        <div class="nsfw-warning">Warning: NSFW options (e.g., explicit genitalia, tentacle fellatio, cum splatter) may not be compatible with platforms like PixAI. Check guidelines.</div>
                     </div>
                 </div>
             </div>
@@ -119,7 +125,7 @@
                         <option value="hajime_hinata">Hajime Hinata (Danganronpa)</option>
                         <option value="generic yaoi protagonist">Generic Yaoi Protagonist</option>
                         <option value="isekai hero">Isekai Hero (2025 Trend)</option>
-                        <option value="vampire lord">Vampire Lord (2025 Trend)</option>
+                        <option value="vampire lord" selected>Vampire Lord (2025 Trend)</option>
                         <option value="cyber hacker">Cyber Hacker (2025 Trend)</option>
                     </select>
                 </div>
@@ -148,7 +154,7 @@
                         <option value="realistic">Realistic</option>
                         <option value="anime screencap">Anime Screencap</option>
                         <option value="concept art">Concept Art</option>
-                        <option value="high-quality rendering">High-Quality Rendering (Masterpiece, Best Quality)</option>
+                        <option value="high-quality rendering" selected>High-Quality Rendering (Masterpiece, Best Quality)</option>
                         <option value="medium water colors">Medium Water Colors</option>
                         <option value="cinematic, vivid colors">Cinematic, Vivid Colors</option>
                     </select>
@@ -168,7 +174,7 @@
                     <label class="form-label" for="cameraShot">Camera Shot:</label>
                     <select class="form-select" id="cameraShot">
                         <option value="none">None</option>
-                        <option value="Cowboy shot">Cowboy Shot</option>
+                        <option value="Cowboy shot" selected>Cowboy Shot</option>
                         <option value="Close-up shot">Close-up Shot</option>
                         <option value="Full shot">Full Shot</option>
                         <option value="Upper body">Upper Body</option>
@@ -180,7 +186,7 @@
                     <label class="form-label" for="cameraAngle">Camera Angle:</label>
                     <select class="form-select" id="cameraAngle">
                         <option value="none">None</option>
-                        <option value="Dutch angle">Dutch Angle</option>
+                        <option value="Dutch angle" selected>Dutch Angle</option>
                         <option value="Low angle">Low Angle</option>
                         <option value="Eye-level angle">Eye-level Angle</option>
                         <option value="Overhead shot">Overhead Shot</option>
@@ -191,7 +197,7 @@
                         <option value="Fisheye">Fisheye</option>
                     </select>
                     <label class="form-label" for="cameraExtra">Extra Effect (Optional):</label>
-                    <input type="text" class="form-control" id="cameraExtra" placeholder="e.g., depth of field, motion blur, bokeh, fisheye, cinematic framing, slightly from the side">
+                    <input type="text" class="form-control" id="cameraExtra" placeholder="e.g., depth of field, motion blur, bokeh, fisheye, cinematic framing">
                 </div>
             </div>
         </div>
@@ -206,8 +212,8 @@
                     <label class="form-label" for="effect1">Effect 1:</label>
                     <select class="form-select" id="effect1">
                         <option value="none">None</option>
-                        <option value="motion lines">Motion Lines</option>
-                        <option value="motion blur" selected>Motion Blur</option>
+                        <option value="motion lines" selected>Motion Lines</option>
+                        <option value="motion blur">Motion Blur</option>
                         <option value="blush overlays">Blush Overlays (2025 Trend)</option>
                         <option value="holographic distortion">Holographic Distortion (2025 Trend)</option>
                         <option value="pixel glitch effect">Pixel Glitch Effect</option>
@@ -232,7 +238,7 @@
                         <option value="bokeh (1.5)">bokeh (1.5)</option>
                     </select>
                     <label class="form-label" for="effectExtra">Extra Effect (Optional):</label>
-                    <input type="text" class="form-control" id="effectExtra" placeholder="e.g., glowing particles, nebula, tentacle fellatio (NSFW), motion blur, sparkling aura, vivid colors">
+                    <input type="text" class="form-control" id="effectExtra" placeholder="e.g., glowing particles, nebula, tentacle fellatio (NSFW), motion blur, sparkling aura, cum splatter (NSFW)">
                 </div>
             </div>
         </div>
@@ -271,11 +277,10 @@
                         <option value="white-blonde hair (very short hair:1.1)">White-blonde, Very Short</option>
                         <option value="purple hair (short hair:1.1, hair between eyes, bangs)">Purple, Short, Bangs</option>
                         <option value="brown hair (short hair:1.1)">Brown, Short</option>
-                        <option value="black hair (short hair:1.1)">Black, Short</option>
+                        <option value="black hair (short hair:1.1)" selected>Black, Short</option>
                         <option value="white hair (curly hair:1.1)">White, Curly</option>
                         <option value="neon-blue hair (undercut style:1.1)">Neon-blue, Undercut (2025 Trend)</option>
                         <option value="fiery-red hair (spiky mohawk:1.1)">Fiery-red, Spiky Mohawk</option>
-                        <option value="short black hair, hair highlighting" selected>Short Black Hair, Hair Highlighting</option>
                     </select>
                     <label class="form-label" for="hairEffect1">Hair Effect:</label>
                     <select class="form-select" id="hairEffect1">
@@ -285,7 +290,7 @@
                         <option value="wavy hair">Wavy Hair</option>
                         <option value="sweat-dampened hair" class="nsfw">Sweat-dampened Hair (NSFW)</option>
                         <option value="matted with cum" class="nsfw">Matted with Cum (NSFW)</option>
-                        <option value="glowing highlights">Glowing Highlights (2025 Trend)</option>
+                        <option value="glowing highlights" selected>Glowing Highlights (2025 Trend)</option>
                         <option value="digital glitch strands">Digital Glitch Strands</option>
                         <option value="hair glittering with petals">Hair Glittering with Petals</option>
                     </select>
@@ -317,20 +322,25 @@
                         <option value="fighting stance">Fighting Stance</option>
                         <option value="squatting">Squatting</option>
                         <option value="mating press" class="nsfw">Mating Press (NSFW)</option>
-                        <option value="mouth open, tongue out" class="nsfw">Mouth Open, Tongue Out (NSFW)</option>
+                        <option value="mouth open, tongue out" class="nsfw" selected>Mouth Open, Tongue Out (NSFW)</option>
+                        <option value="ecstatic climax expression" class="nsfw">Ecstatic Climax Expression (NSFW)</option>
+                        <option value="lewd panting" class="nsfw">Lewd Panting (NSFW)</option>
                     </select>
                     <label class="form-label" for="bodyDetail1">Body Detail:</label>
                     <select class="form-select" id="bodyDetail1">
                         <option value="none">None</option>
                         <option value="exposed torso" class="nsfw">Exposed Torso (NSFW)</option>
                         <option value="explicit genitalia (flaccid penis, testicles, pubic hair)" class="nsfw">Explicit Genitalia (Flaccid, NSFW)</option>
-                        <option value="explicit genitalia (erection, pubic hair, hard nipples)" class="nsfw">Explicit Genitalia (Erection, NSFW)</option>
+                        <option value="explicit genitalia (erection, pubic hair, hard nipples)" class="nsfw" selected>Explicit Genitalia (Erection, NSFW)</option>
                         <option value="flushed cheeks" class="nsfw">Flushed Cheeks (NSFW)</option>
                         <option value="collarbone, navel, pelvic hair" class="nsfw">Collarbone, Navel, Pelvic Hair (NSFW)</option>
                         <option value="cybernetic augmentations">Cybernetic Augmentations (2025 Trend)</option>
                         <option value="tattoo circuits">Tattoo Circuits</option>
-                        <option value="bouncing penis, precum leaking" class="nsfw" selected>Bouncing Penis, Precum Leaking (NSFW)</option>
+                        <option value="bouncing penis, precum leaking" class="nsfw">Bouncing Penis, Precum Leaking (NSFW)</option>
                         <option value="smooth silk skin, wet body" class="nsfw">Smooth Silk Skin, Wet Body (NSFW)</option>
+                        <option value="cum-drenched abs" class="nsfw">Cum-drenched Abs (NSFW)</option>
+                        <option value="sweaty inner thighs" class="nsfw">Sweaty Inner Thighs (NSFW)</option>
+                        <option value="erection straining fabric" class="nsfw">Erection Straining Fabric (NSFW)</option>
                     </select>
                     <label class="form-label" for="charExtra1">Extra Detail:</label>
                     <select class="form-select" id="charExtra1">
@@ -343,8 +353,8 @@
                         <option value="neural link ports">Neural Link Ports</option>
                         <option value="clean nails">Clean Nails</option>
                         <option value="blush face, sweatdrop" class="nsfw">Blush Face, Sweatdrop (NSFW)</option>
-                        <option value="black nails, claws, oni horns">Black Nails, Claws, Oni Horns (NSFW)</option>
-                        <option value="nice handsome face" selected>Nice Handsome Face</option>
+                        <option value="7 horns on head, tattoo with 7 eyes" selected>7 Horns on Head, Tattoo with 7 Eyes</option>
+                        <option value="nice handsome face">Nice Handsome Face</option>
                     </select>
                 </div>
             </div>
@@ -365,7 +375,7 @@
                             <option value="1boy, solo male focus, lean build, yaoi uke">Yaoi Uke</option>
                             <option value="1boy, solo male focus, muscular build, yaoi seme">Yaoi Seme</option>
                             <option value="1boy, solo male focus, slender build, bi/pan protagonist">Bi/Pan Protagonist (2025 Inclusive)</option>
-                            <option value="2boys, yaoi couple, athletic build, yaoi, gay">Yaoi Couple (Athletic, 2025 Trend)</option>
+                            <option value="2boys, yaoi couple, athletic build, yaoi, gay" selected>Yaoi Couple (Athletic, 2025 Trend)</option>
                         </optgroup>
                         <optgroup label="Fantasy Roles">
                             <option value="1boy, solo male focus, slender build, fantasy rogue">Fantasy Rogue</option>
@@ -386,10 +396,9 @@
                         <option value="purple hair (short hair:1.1, hair between eyes, bangs)">Purple, Short, Bangs</option>
                         <option value="brown hair (short hair:1.1)">Brown, Short</option>
                         <option value="black hair (short hair:1.1)">Black, Short</option>
-                        <option value="white hair (curly hair:1.1)">White, Curly</option>
+                        <option value="white hair (curly hair:1.1)" selected>White, Curly</option>
                         <option value="neon-blue hair (undercut style:1.1)">Neon-blue, Undercut (2025 Trend)</option>
                         <option value="fiery-red hair (spiky mohawk:1.1)">Fiery-red, Spiky Mohawk</option>
-                        <option value="short black hair, hair highlighting">Short Black Hair, Hair Highlighting</option>
                     </select>
                     <label class="form-label" for="hairEffect2">Hair Effect:</label>
                     <select class="form-select" id="hairEffect2">
@@ -402,6 +411,7 @@
                         <option value="glowing highlights">Glowing Highlights (2025 Trend)</option>
                         <option value="digital glitch strands">Digital Glitch Strands</option>
                         <option value="hair glittering with petals">Hair Glittering with Petals</option>
+                        <option value="long white eyelashes" selected>Long White Eyelashes</option>
                     </select>
                     <label class="form-label" for="eyes2">Eyes:</label>
                     <select class="form-select" id="eyes2">
@@ -412,7 +422,7 @@
                         <option value="yellow-green eyes">Yellow-green Eyes</option>
                         <option value="blue eyes">Blue Eyes</option>
                         <option value="hazel eyes">Hazel Eyes</option>
-                        <option value="light green eyes">Light Green Eyes</option>
+                        <option value="light green eyes" selected>Light Green Eyes</option>
                         <option value="glowing red eyes">Glowing Red Eyes</option>
                         <option value="seductive violet eyes" class="nsfw">Seductive Violet Eyes (NSFW)</option>
                         <option value="cybernetic implants eyes">Cybernetic Eyes (2025 Trend)</option>
@@ -431,20 +441,25 @@
                         <option value="fighting stance">Fighting Stance</option>
                         <option value="squatting">Squatting</option>
                         <option value="mating press" class="nsfw">Mating Press (NSFW)</option>
-                        <option value="on stomach, ass in the air" class="nsfw">On Stomach, Ass in the Air (NSFW)</option>
+                        <option value="on stomach, ass in the air" class="nsfw" selected>On Stomach, Ass in the Air (NSFW)</option>
+                        <option value="ecstatic climax expression" class="nsfw">Ecstatic Climax Expression (NSFW)</option>
+                        <option value="lewd panting" class="nsfw">Lewd Panting (NSFW)</option>
                     </select>
                     <label class="form-label" for="bodyDetail2">Body Detail:</label>
                     <select class="form-select" id="bodyDetail2">
                         <option value="none">None</option>
                         <option value="exposed torso" class="nsfw">Exposed Torso (NSFW)</option>
                         <option value="explicit genitalia (flaccid penis, testicles, pubic hair)" class="nsfw">Explicit Genitalia (Flaccid, NSFW)</option>
-                        <option value="explicit genitalia (erection, pubic hair, hard nipples)" class="nsfw">Explicit Genitalia (Erection, NSFW)</option>
+                        <option value="explicit genitalia (erection, pubic hair, hard nipples)" class="nsfw" selected>Explicit Genitalia (Erection, NSFW)</option>
                         <option value="flushed cheeks" class="nsfw">Flushed Cheeks (NSFW)</option>
                         <option value="collarbone, navel, pelvic hair" class="nsfw">Collarbone, Navel, Pelvic Hair (NSFW)</option>
                         <option value="cybernetic augmentations">Cybernetic Augmentations (2025 Trend)</option>
                         <option value="tattoo circuits">Tattoo Circuits</option>
                         <option value="bouncing penis, precum leaking" class="nsfw">Bouncing Penis, Precum Leaking (NSFW)</option>
                         <option value="smooth silk skin, wet body" class="nsfw">Smooth Silk Skin, Wet Body (NSFW)</option>
+                        <option value="cum-drenched abs" class="nsfw">Cum-drenched Abs (NSFW)</option>
+                        <option value="sweaty inner thighs" class="nsfw">Sweaty Inner Thighs (NSFW)</option>
+                        <option value="erection straining fabric" class="nsfw">Erection Straining Fabric (NSFW)</option>
                     </select>
                     <label class="form-label" for="charExtra2">Extra Detail:</label>
                     <select class="form-select" id="charExtra2">
@@ -457,7 +472,7 @@
                         <option value="neural link ports">Neural Link Ports</option>
                         <option value="clean nails">Clean Nails</option>
                         <option value="blush face, sweatdrop" class="nsfw">Blush Face, Sweatdrop (NSFW)</option>
-                        <option value="curled black horns, freckles">Curled Black Horns, Freckles</option>
+                        <option value="curled black horns, freckles" selected>Curled Black Horns, Freckles</option>
                     </select>
                 </div>
             </div>
@@ -485,7 +500,7 @@
                     <select class="form-select" id="tropeExtra">
                         <option value="none">None</option>
                         <option value="childhood friends to lovers">Childhood Friends to Lovers</option>
-                        <option value="vampire seduction" class="nsfw">Vampire Seduction (NSFW, 2025)</option>
+                        <option value="vampire seduction" class="nsfw" selected>Vampire Seduction (NSFW, 2025)</option>
                         <option value="confession under moonlight">Confession Under Moonlight</option>
                         <option value="virtual reality tryst" class="nsfw">Virtual Reality Tryst (NSFW, 2025 Trend)</option>
                         <option value="hacker rivals to lovers">Hacker Rivals to Lovers (2025 Trend)</option>
@@ -523,6 +538,9 @@
                             <option value="naked" class="nsfw">Naked (NSFW)</option>
                             <option value="silk see-through crotch, visible penis, wet cloth" class="nsfw" selected>Silk See-through Crotch, Visible Penis, Wet Cloth (NSFW)</option>
                             <option value="white shirt, wet cloth" class="nsfw">White Shirt, Wet Cloth (NSFW)</option>
+                            <option value="leather harness, exposed genitals" class="nsfw">Leather Harness, Exposed Genitals (NSFW)</option>
+                            <option value="wet fundoshi, dripping precum" class="nsfw">Wet Fundoshi, Dripping Precum (NSFW)</option>
+                            <option value="transparent latex bodysuit" class="nsfw">Transparent Latex Bodysuit (NSFW)</option>
                         </optgroup>
                     </select>
                     <label class="form-label" for="weapon">Weapon/Accessory:</label>
@@ -549,7 +567,7 @@
                         <option value="collar" class="nsfw">Collar (NSFW)</option>
                     </select>
                     <label class="form-label" for="attireExtra">Extra Attire Detail (Optional):</label>
-                    <input type="text" class="form-control" id="attireExtra" placeholder="e.g., soft see-through fabric, wet body, all wet, glowing circuits, cum effects (NSFW), ripped clothes">
+                    <input type="text" class="form-control" id="attireExtra" placeholder="e.g., soft see-through fabric, wet cloth, glowing circuits, cum effects (NSFW), ripped clothes, dripping precum (NSFW)">
                 </div>
             </div>
         </div>
@@ -569,7 +587,6 @@
                         <option value="harsh spotlight">Harsh Spotlight</option>
                         <option value="neon underglow">Neon Underglow (2025 Trend)</option>
                         <option value="soft lighting">Soft Lighting</option>
-                        <option value="low light">Low Light</option>
                     </select>
                     <label class="form-label" for="lighting2">Lighting Style 2:</label>
                     <select class="form-select" id="lighting2">
@@ -580,6 +597,7 @@
                         <option value="moonlit ritual" class="trend">Moonlit Ritual (2025 Trend)</option>
                         <option value="summer aesthetic light" selected>Summer Aesthetic Light</option>
                         <option value="holographic projection light">Holographic Projection (2025 Trend)</option>
+                        <option value="low light">Low Light</option>
                     </select>
                     <label class="form-label" for="atmosphere">Atmosphere:</label>
                     <select class="form-select" id="atmosphere">
@@ -603,7 +621,7 @@
                         <option value="electric green">Electric Green (2025 Trend)</option>
                     </select>
                     <label class="form-label" for="lightExtra">Extra Lighting (Optional):</label>
-                    <input type="text" class="form-control" id="lightExtra" placeholder="e.g., soft glow, warm aesthetic light, blown out halo, neon underglow (2025 Trend), moon glow">
+                    <input type="text" class="form-control" id="lightExtra" placeholder="e.g., soft glow, moonlit glow, neon underglow, warm aesthetic light, glowing particles">
                 </div>
             </div>
         </div>
@@ -629,7 +647,7 @@
                         <option value="wasteland ruins">Wasteland Ruins (2025 Trend)</option>
                         <option value="indoors">Indoors</option>
                         <option value="street market">Street Market</option>
-                        <option value="meadow, night, starry sky">Meadow, Night, Starry Sky</option>
+                        <option value="meadow, night, starry sky" selected>Meadow, Night, Starry Sky</option>
                     </select>
                     <label class="form-label" for="bgEffect">Background Effect:</label>
                     <select class="form-select" id="bgEffect">
@@ -641,11 +659,11 @@
                         <option value="neon rain">Neon Rain (2025 Trend)</option>
                         <option value="data stream overlays">Data Stream Overlays (2025 Trend)</option>
                         <option value="straw">Straw</option>
-                        <option value="nebula">Nebula</option>
+                        <option value="nebula" selected>Nebula</option>
                         <option value="moon">Moon</option>
                     </select>
                     <label class="form-label" for="bgExtra">Extra Background Detail (Optional):</label>
-                    <input type="text" class="form-control" id="bgExtra" placeholder="e.g., starry sky, scattered petals, rustic barn, nebula backdrop, glowing mushrooms, flowers">
+                    <input type="text" class="form-control" id="bgExtra" placeholder="e.g., starry sky, scattered petals, nebula, flowers, moonlit meadow, glowing mushrooms">
                 </div>
             </div>
         </div>
@@ -668,6 +686,8 @@
                         <option value="determined glare">Determined Glare</option>
                         <option value="playful wink">Playful Wink (2025 Trend)</option>
                         <option value="expressive bashful face: soft smile, glancing sideways, biting lip" class="nsfw">Expressive Bashful Face (NSFW)</option>
+                        <option value="ecstatic climax expression" class="nsfw">Ecstatic Climax Expression (NSFW)</option>
+                        <option value="lewd panting" class="nsfw">Lewd Panting (NSFW)</option>
                     </select>
                     <label class="form-label" for="magicEffect">Magical Effect:</label>
                     <select class="form-select" id="magicEffect">
@@ -680,6 +700,7 @@
                         <option value="transparent ghost" class="nsfw">Transparent Ghost (NSFW)</option>
                         <option value="green transparent tentacles" class="nsfw" selected>Green Transparent Tentacles (NSFW)</option>
                         <option value="tentacle fellatio" class="nsfw">Tentacle Fellatio (NSFW)</option>
+                        <option value="tentacle bondage" class="nsfw">Tentacle Bondage (NSFW)</option>
                     </select>
                     <label class="form-label" for="binding">Binding Element:</label>
                     <select class="form-select" id="binding">
@@ -700,9 +721,12 @@
                         <option value="tentacles grabbing pectorals" class="nsfw">Tentacles Grabbing Pectorals (NSFW)</option>
                         <option value="anal penetration" class="nsfw" selected>Anal Penetration (NSFW)</option>
                         <option value="horny" class="nsfw">Horny (NSFW)</option>
+                        <option value="double penetration" class="nsfw">Double Penetration (NSFW)</option>
+                        <option value="cum splatter" class="nsfw">Cum Splatter (NSFW)</option>
+                        <option value="oral fixation" class="nsfw">Oral Fixation (NSFW)</option>
                     </select>
                     <label class="form-label" for="addExtra">Extra Element (Optional):</label>
-                    <input type="text" class="form-control" id="addExtra" placeholder="e.g., tentacle fellatio, bouncing penis, glowing circuits, vampire bite, scattered flowers (NSFW)">
+                    <input type="text" class="form-control" id="addExtra" placeholder="e.g., tentacle fellatio, bouncing penis, glowing circuits, vampire bite, scattered flowers, cumming (NSFW), creampie (NSFW)">
                 </div>
             </div>
         </div>
@@ -723,9 +747,12 @@
                         <option value="cybernetic interface">Cybernetic Interface (2025 Trend)</option>
                         <option value="trapped in cage, imprisoned" class="nsfw">Trapped in Cage, Imprisoned (NSFW)</option>
                         <option value="fucking, sex" class="nsfw">Fucking, Sex (NSFW)</option>
+                        <option value="intense anal thrusting" class="nsfw">Intense Anal Thrusting (NSFW)</option>
+                        <option value="rimming" class="nsfw">Rimming (NSFW)</option>
+                        <option value="tentacle insertion" class="nsfw">Tentacle Insertion (NSFW)</option>
                     </select>
                     <label class="form-label" for="dialogueExtra">Extra Dialogue (Optional):</label>
-                    <input type="text" class="form-control" id="dialogueExtra" placeholder="e.g., moaning sounds (NSFW), Japanese whispers, seductive taunts, heartfelt confessions, (moaning:1.1)">
+                    <input type="text" class="form-control" id="dialogueExtra" placeholder="e.g., moaning sounds, Japanese whispers (NSFW), seductive taunts, heartfelt confessions, lewd panting (NSFW)">
                 </div>
             </div>
         </div>
@@ -744,10 +771,10 @@
                         <option value="street market">Street Market</option>
                         <option value="cyberpunk alley">Cyberpunk Alley (2025 Trend)</option>
                         <option value="isekai tavern">Isekai Tavern (2025 Trend)</option>
-                        <option value="flowers, meadow">Flowers, Meadow</option>
+                        <option value="flowers, meadow" selected>Flowers, Meadow</option>
                     </select>
                     <label class="form-label" for="envExtra">Extra Environment Detail (Optional):</label>
-                    <input type="text" class="form-control" id="envExtra" placeholder="e.g., starry sky, scattered petals, rustic barn, nebula backdrop, glowing mushrooms, moon, flowers">
+                    <input type="text" class="form-control" id="envExtra" placeholder="e.g., starry sky, scattered petals, rustic barn, nebula backdrop, glowing mushrooms, flowers">
                 </div>
             </div>
         </div>
@@ -762,6 +789,7 @@
 
         <!-- Output Area -->
         <div id="finalPrompt" class="mt-3"></div>
+        <div id="altText" class="mt-2"></div>
     </div>
 
     <!-- Bootstrap 5 JS and Popper -->
@@ -920,9 +948,27 @@
 
                 const finalPromptText = allParts.join(', ').replace(/, $/, ''); // Trim trailing comma
 
+                // Generate alt text
+                let altText = '';
+                const charDesc = inputs.charInspiration !== 'none' ? inputs.charInspiration : 'A male character';
+                const hairDesc = inputs.hair1 !== 'none' ? ` with ${inputs.hair1.split('(')[0].trim()}` : '';
+                const poseDesc = filterNSFW(inputs.pose1, 'pose1') !== 'none' ? ` in a ${filterNSFW(inputs.pose1, 'pose1')}` : '';
+                const attireDesc = filterNSFW(inputs.attire, 'attire') !== 'none' ? ` wearing ${filterNSFW(inputs.attire, 'attire')}` : '';
+                const bgDesc = filterNSFW(inputs.background, 'background') !== 'none' ? ` in a ${filterNSFW(inputs.background, 'background')}` : '';
+                const effectDesc = filterNSFW(inputs.effect2, 'effect2') !== 'none' ? ` with ${filterNSFW(inputs.effect2, 'effect2')}` : '';
+                const lightingDesc = inputs.lighting1 !== 'none' ? ` under ${inputs.lighting1}` : '';
+                const interactionDesc = nsfwToggle && filterNSFW(inputs.interaction, 'interaction') !== 'none' ? ` engaging in ${filterNSFW(inputs.interaction, 'interaction')}` : '';
+                
+                altText = `${charDesc}${hairDesc}${poseDesc}${attireDesc}${interactionDesc}${bgDesc}${effectDesc}${lightingDesc}.`.trim();
+                if (altText.length > 150) {
+                    altText = altText.substring(0, 147) + '...';
+                }
+
                 const finalPrompt = document.getElementById('finalPrompt');
+                const altTextDiv = document.getElementById('altText');
                 finalPrompt.style.display = 'block';
                 finalPrompt.textContent = finalPromptText || 'No selections made.';
+                altTextDiv.textContent = altText ? `Alt Text: ${altText}` : 'No alt text generated.';
             } catch (error) {
                 alert('Error generating prompt: ' + error.message);
             }
@@ -937,25 +983,26 @@
                         if (!nsfwToggle && opt.classList.contains('nsfw')) return false;
                         return opt.value !== 'none';
                     });
-                    if (options.length > 0) {
+                    if (options.length > 0 && Math.random() > 0.2) { // 20% chance to skip for leaner prompts
                         const randomIndex = Math.floor(Math.random() * options.length);
                         select.selectedIndex = options[randomIndex].index;
                     } else {
-                        select.selectedIndex = 0; // Default to 'None' if no compatible options
+                        select.selectedIndex = 0; // Default to 'None'
                     }
                 });
 
-                // For text inputs (optional fields), randomly decide to add suggested data or leave blank
+                // Randomly fill text inputs with suggested data (50% chance)
                 const allTexts = document.querySelectorAll('input[type="text"]');
                 allTexts.forEach(text => {
                     if (Math.random() > 0.5) {
-                        text.value = text.placeholder.split(', ')[Math.floor(Math.random() * text.placeholder.split(', ').length)]; // Randomly pick one suggestion from placeholder
+                        const suggestions = text.placeholder.split(', ').filter(s => nsfwToggle || !s.includes('(NSFW)'));
+                        text.value = suggestions[Math.floor(Math.random() * suggestions.length)];
                     } else {
                         text.value = '';
                     }
                 });
 
-                generatePrompt(); // Generate the prompt with the random selections
+                generatePrompt(); // Generate the prompt and alt text with random selections
             } catch (error) {
                 alert('Error generating random prompt: ' + error.message);
             }
@@ -977,13 +1024,211 @@
                 if (el.tagName === 'SELECT') {
                     el.selectedIndex = el.querySelector('option[selected]') ? [...el.options].findIndex(opt => opt.selected) : 0;
                 } else if (el.type === 'text') {
-                    el.value = el.getAttribute('value') || '';
+                    el.value = '';
                 } else if (el.type === 'checkbox') {
                     el.checked = true; // Reset NSFW to enabled
-                }
+                                }
             });
             generatePrompt(); // Regenerate with defaults
         }
+
+        function generatePrompt() {
+            try {
+                const nsfwToggle = document.getElementById('nsfwToggle').checked;
+                const inputs = {
+                    charInspiration: document.getElementById('charInspiration').value,
+                    artStyle: document.getElementById('artStyle').value,
+                    artExtra: document.getElementById('artExtra').value,
+                    cameraShot: document.getElementById('cameraShot').value,
+                    cameraAngle: document.getElementById('cameraAngle').value,
+                    cameraExtra: document.getElementById('cameraExtra').value,
+                    effect1: document.getElementById('effect1').value,
+                    effect2: document.getElementById('effect2').value,
+                    bokeh: document.getElementById('bokeh').value,
+                    effectExtra: document.getElementById('effectExtra').value,
+                    characterType1: document.getElementById('characterType1').value,
+                    hair1: document.getElementById('hair1').value,
+                    hairEffect1: document.getElementById('hairEffect1').value,
+                    eyes1: document.getElementById('eyes1').value,
+                    pose1: document.getElementById('pose1').value,
+                    bodyDetail1: document.getElementById('bodyDetail1').value,
+                    charExtra1: document.getElementById('charExtra1').value,
+                    characterType2: document.getElementById('characterType2').value,
+                    hair2: document.getElementById('hair2').value,
+                    hairEffect2: document.getElementById('hairEffect2').value,
+                    eyes2: document.getElementById('eyes2').value,
+                    pose2: document.getElementById('pose2').value,
+                    bodyDetail2: document.getElementById('bodyDetail2').value,
+                    charExtra2: document.getElementById('charExtra2').value,
+                    tropeMain: document.getElementById('tropeMain').value,
+                    tropeExtra: document.getElementById('tropeExtra').value,
+                    attire: document.getElementById('attire').value,
+                    weapon: document.getElementById('weapon').value,
+                    accessory: document.getElementById('accessory').value,
+                    attireExtra: document.getElementById('attireExtra').value,
+                    lighting1: document.getElementById('lighting1').value,
+                    lighting2: document.getElementById('lighting2').value,
+                    atmosphere: document.getElementById('atmosphere').value,
+                    lightColor: document.getElementById('lightColor').value,
+                    lightExtra: document.getElementById('lightExtra').value,
+                    background: document.getElementById('background').value,
+                    bgEffect: document.getElementById('bgEffect').value,
+                    bgExtra: document.getElementById('bgExtra').value,
+                    expression: document.getElementById('expression').value,
+                    magicEffect: document.getElementById('magicEffect').value,
+                    binding: document.getElementById('binding').value,
+                    energy: document.getElementById('energy').value,
+                    addExtra: document.getElementById('addExtra').value,
+                    interaction: document.getElementById('interaction').value,
+                    dialogueExtra: document.getElementById('dialogueExtra').value,
+                    envDetail: document.getElementById('envDetail').value,
+                    envExtra: document.getElementById('envExtra').value
+                };
+
+                const filterNSFW = (value, id) => {
+                    if (!nsfwToggle) {
+                        const selectElement = document.getElementById(id);
+                        if (selectElement?.options[selectElement.selectedIndex]?.classList?.contains('nsfw')) {
+                            return 'none';
+                        }
+                    }
+                    return value;
+                };
+
+                const allParts = [];
+
+                // Order: char inspiration, camera, effects, expression, lighting, character 1, character 2, atmosphere, background, attire, additional, dialogue, environment, trope, art
+                if (inputs.charInspiration && inputs.charInspiration !== 'none') allParts.push(inputs.charInspiration);
+
+                [inputs.cameraShot, inputs.cameraAngle, inputs.cameraExtra].forEach(part => {
+                    if (part && part !== 'none') allParts.push(part);
+                });
+
+                [filterNSFW(inputs.effect1, 'effect1'), filterNSFW(inputs.effect2, 'effect2'), inputs.bokeh, inputs.effectExtra].forEach(part => {
+                    if (part && part !== 'none') allParts.push(part);
+                });
+
+                if (filterNSFW(inputs.expression, 'expression') && filterNSFW(inputs.expression, 'expression') !== 'none') {
+                    allParts.push(filterNSFW(inputs.expression, 'expression'));
+                }
+
+                [inputs.lighting1, filterNSFW(inputs.lighting2, 'lighting2'), inputs.lightColor, inputs.lightExtra].forEach(part => {
+                    if (part && part !== 'none') allParts.push(part);
+                });
+
+                [filterNSFW(inputs.characterType1, 'characterType1'), inputs.hair1, filterNSFW(inputs.hairEffect1, 'hairEffect1'), filterNSFW(inputs.eyes1, 'eyes1'), filterNSFW(inputs.pose1, 'pose1'), filterNSFW(inputs.bodyDetail1, 'bodyDetail1'), filterNSFW(inputs.charExtra1, 'charExtra1')].forEach(part => {
+                    if (part && part !== 'none') allParts.push(part);
+                });
+
+                [filterNSFW(inputs.characterType2, 'characterType2'), inputs.hair2, filterNSFW(inputs.hairEffect2, 'hairEffect2'), filterNSFW(inputs.eyes2, 'eyes2'), filterNSFW(inputs.pose2, 'pose2'), filterNSFW(inputs.bodyDetail2, 'bodyDetail2'), filterNSFW(inputs.charExtra2, 'charExtra2')].forEach(part => {
+                    if (part && part !== 'none') allParts.push(part);
+                });
+
+                [filterNSFW(inputs.atmosphere, 'atmosphere')].forEach(part => {
+                    if (part && part !== 'none') allParts.push(part);
+                });
+
+                [filterNSFW(inputs.background, 'background'), filterNSFW(inputs.bgEffect, 'bgEffect'), inputs.bgExtra].forEach(part => {
+                    if (part && part !== 'none') allParts.push(part);
+                });
+
+                [filterNSFW(inputs.attire, 'attire'), inputs.weapon, filterNSFW(inputs.attireExtra, 'attireExtra'), filterNSFW(inputs.accessory, 'accessory')].forEach(part => {
+                    if (part && part !== 'none') allParts.push(part);
+                });
+
+                [filterNSFW(inputs.magicEffect, 'magicEffect'), filterNSFW(inputs.binding, 'binding'), filterNSFW(inputs.energy, 'energy'), inputs.addExtra].forEach(part => {
+                    if (part && part !== 'none') allParts.push(part);
+                });
+
+                [filterNSFW(inputs.interaction, 'interaction'), inputs.dialogueExtra].forEach(part => {
+                    if (part && part !== 'none') allParts.push(part);
+                });
+
+                [filterNSFW(inputs.envDetail, 'envDetail'), inputs.envExtra].forEach(part => {
+                    if (part && part !== 'none') allParts.push(part);
+                });
+
+                [filterNSFW(inputs.tropeMain, 'tropeMain'), filterNSFW(inputs.tropeExtra, 'tropeExtra')].forEach(part => {
+                    if (part && part !== 'none') allParts.push(part);
+                });
+
+                [inputs.artStyle, inputs.artExtra].forEach(part => {
+                    if (part && part !== 'none') allParts.push(part);
+                });
+
+                const finalPromptText = allParts.join(', ').replace(/, $/, ''); // Trim trailing comma
+
+                // Generate alt text
+                let altText = '';
+                const charDesc = inputs.charInspiration !== 'none' ? inputs.charInspiration : 'A male character';
+                const hairDesc = inputs.hair1 !== 'none' ? ` with ${inputs.hair1.split('(')[0].trim()}` : '';
+                const poseDesc = filterNSFW(inputs.pose1, 'pose1') !== 'none' ? ` in a ${filterNSFW(inputs.pose1, 'pose1')}` : '';
+                const attireDesc = filterNSFW(inputs.attire, 'attire') !== 'none' ? ` wearing ${filterNSFW(inputs.attire, 'attire')}` : '';
+                const bgDesc = filterNSFW(inputs.background, 'background') !== 'none' ? ` in a ${filterNSFW(inputs.background, 'background')}` : '';
+                const effectDesc = filterNSFW(inputs.effect2, 'effect2') !== 'none' ? ` with ${filterNSFW(inputs.effect2, 'effect2')}` : '';
+                const lightingDesc = inputs.lighting1 !== 'none' ? ` under ${inputs.lighting1}` : '';
+                const interactionDesc = nsfwToggle && filterNSFW(inputs.interaction, 'interaction') !== 'none' ? ` engaging in ${filterNSFW(inputs.interaction, 'interaction')}` : '';
+                const char2Desc = inputs.characterType2 !== 'none' ? ` and a second male with ${inputs.hair2.split('(')[0].trim()} in a ${filterNSFW(inputs.pose2, 'pose2')}` : '';
+
+                altText = `${charDesc}${hairDesc}${poseDesc}${attireDesc}${interactionDesc}${char2Desc}${bgDesc}${effectDesc}${lightingDesc}.`.trim();
+                if (altText.length > 150) {
+                    altText = altText.substring(0, 147) + '...';
+                }
+
+                const finalPrompt = document.getElementById('finalPrompt');
+                const altTextDiv = document.getElementById('altText');
+                finalPrompt.style.display = 'block';
+                finalPrompt.textContent = finalPromptText || 'No selections made.';
+                altTextDiv.textContent = altText ? `Alt Text: ${altText}` : 'No alt text generated.';
+            } catch (error) {
+                alert('Error generating prompt: ' + error.message);
+            }
+        }
+
+        function generateRandomPrompt() {
+            try {
+                const nsfwToggle = document.getElementById('nsfwToggle').checked;
+                const allSelects = document.querySelectorAll('select');
+                allSelects.forEach(select => {
+                    const options = [...select.options].filter(opt => {
+                        if (!nsfwToggle && opt.classList.contains('nsfw')) return false;
+                        return opt.value !== 'none';
+                    });
+                    if (options.length > 0 && Math.random() > 0.2) { // 20% chance to skip for leaner prompts
+                        const randomIndex = Math.floor(Math.random() * options.length);
+                        select.selectedIndex = options[randomIndex].index;
+                    } else {
+                        select.selectedIndex = 0; // Default to 'None'
+                    }
+                });
+
+                // Randomly fill text inputs with suggested data (50% chance)
+                const allTexts = document.querySelectorAll('input[type="text"]');
+                allTexts.forEach(text => {
+                    if (Math.random() > 0.5) {
+                        const suggestions = text.placeholder.split(', ').filter(s => nsfwToggle || !s.includes('(NSFW)'));
+                        text.value = suggestions[Math.floor(Math.random() * suggestions.length)];
+                    } else {
+                        text.value = '';
+                    }
+                });
+
+                generatePrompt(); // Generate the prompt and alt text with random selections
+            } catch (error) {
+                alert('Error generating random prompt: ' + error.message);
+            }
+        }
+
+        function copyPrompt() {
+            try {
+                const promptText = document.getElementById('finalPrompt').textContent;
+                navigator.clipboard.writeText(promptText).then(() => {
+                    alert('Prompt copied to clipboard!');
+                });
+            } catch (error) {
+                alert('Error copying prompt: ' + error.message);
+            }
+        }
     </script>
 </body>
-                            </html>
+</html>
