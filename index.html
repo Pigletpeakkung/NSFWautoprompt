@@ -96,7 +96,7 @@
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" id="nsfwToggle" checked>
                         <label class="form-check-label" for="nsfwToggle">Enable NSFW Elements (Explicit Content)</label>
-                        <div class="nsfw-warning">Warning: NSFW options (e.g., explicit genitalia, bondage, ghost sex) may not be compatible with platforms like PixAI. Check guidelines.</div>
+                        <div class="nsfw-warning">Warning: NSFW options (e.g., explicit genitalia, tentacle fellatio, ghost sex) may not be compatible with platforms like PixAI. Check guidelines.</div>
                     </div>
                 </div>
             </div>
@@ -113,7 +113,7 @@
                     <select class="form-select" id="charInspiration">
                         <option value="none">None</option>
                         <option value="rafayel_lnds">Rafayel (Love and Deepspace)</option>
-                        <option value="hajime_hinata" selected>Hajime Hinata (Danganronpa)</option>
+                        <option value="hajime_hinata">Hajime Hinata (Danganronpa)</option>
                         <option value="generic yaoi protagonist">Generic Yaoi Protagonist</option>
                         <option value="isekai hero">Isekai Hero (2025 Trend)</option>
                         <option value="vampire lord">Vampire Lord (2025 Trend)</option>
@@ -143,9 +143,10 @@
                         <option value="post-apocalyptic style, gritty details">Post-Apocalyptic, Gritty (2025 Trend)</option>
                         <option value="uncensored full-color doujinshi">Uncensored Full-Color Doujinshi (2025 Trend)</option>
                         <option value="realistic">Realistic</option>
-                        <option value="anime screencap" selected>Anime Screencap</option>
+                        <option value="anime screencap">Anime Screencap</option>
                         <option value="concept art">Concept Art</option>
-                        <option value="high-quality rendering">High-Quality Rendering (Masterpiece, Best Quality)</option>
+                        <option value="high-quality rendering" selected>High-Quality Rendering (Masterpiece, Best Quality)</option>
+                        <option value="medium water colors">Medium Water Colors</option>
                     </select>
                     <label class="form-label" for="artExtra" data-bs-toggle="tooltip" title="Add custom style details, e.g., lazypos, lazynsfw">Extra Style (Optional):</label>
                     <input type="text" class="form-control" id="artExtra" placeholder="e.g., lazypos, lazynsfw, very aesthetic">
@@ -185,7 +186,7 @@
                         <option value="Fisheye">Fisheye</option>
                     </select>
                     <label class="form-label" for="cameraExtra">Extra Effect (Optional):</label>
-                    <input type="text" class="form-control" id="cameraExtra" placeholder="e.g., depth of field, blending">
+                    <input type="text" class="form-control" id="cameraExtra" placeholder="e.g., depth of field, motion blur">
                 </div>
             </div>
         </div>
@@ -201,7 +202,7 @@
                     <select class="form-select" id="effect1">
                         <option value="none">None</option>
                         <option value="motion lines" selected>Motion Lines</option>
-                        <option value="speed blur">Speed Blur</option>
+                        <option value="motion blur">Motion Blur</option>
                         <option value="blush overlays">Blush Overlays (2025 Trend)</option>
                         <option value="holographic distortion">Holographic Distortion (2025 Trend)</option>
                         <option value="pixel glitch effect">Pixel Glitch Effect</option>
@@ -212,9 +213,10 @@
                         <option value="cartoon sparks">Cartoon Sparks</option>
                         <option value="glowing runes">Glowing Runes</option>
                         <option value="energy bursts">Energy Bursts</option>
-                        <option value="cartoon hearts" class="nsfw" selected>Cartoon Hearts (NSFW)</option>
+                        <option value="cartoon hearts" class="nsfw">Cartoon Hearts (NSFW)</option>
                         <option value="neon pulse">Neon Pulse (2025 Trend)</option>
                         <option value="digital artifacts">Digital Artifacts</option>
+                        <option value="glowing particles" selected>Glowing Particles</option>
                     </select>
                     <label class="form-label" for="bokeh">Bokeh Weight:</label>
                     <select class="form-select" id="bokeh">
@@ -230,22 +232,21 @@
             </div>
         </div>
 
-        <!-- Character Description -->
+        <!-- Character Description (Character 1) -->
         <div class="card">
-            <div class="card-header" data-bs-toggle="collapse" data-bs-target="#character">
-                <h2 class="mb-0">Character Description</h2>
+            <div class="card-header" data-bs-toggle="collapse" data-bs-target="#character1">
+                <h2 class="mb-0">Character Description (Character 1)</h2>
             </div>
-            <div id="character" class="collapse show">
+            <div id="character1" class="collapse show">
                 <div class="card-body">
-                    <label class="form-label" for="characterType">Character Type:</label>
-                    <select class="form-select" id="characterType">
+                    <label class="form-label" for="characterType1">Character Type:</label>
+                    <select class="form-select" id="characterType1">
                         <option value="none">None</option>
                         <optgroup label="Yaoi Roles">
                             <option value="1boy, solo male focus, athletic build, yaoi, gay" selected>Yaoi, Gay (Athletic)</option>
                             <option value="1boy, solo male focus, lean build, yaoi uke">Yaoi Uke</option>
                             <option value="1boy, solo male focus, muscular build, yaoi seme">Yaoi Seme</option>
                             <option value="1boy, solo male focus, slender build, bi/pan protagonist">Bi/Pan Protagonist (2025 Inclusive)</option>
-                            <option value="2boys, male couple focus, intertwined poses">Yaoi Couple (2025 Trend)</option>
                         </optgroup>
                         <optgroup label="Fantasy Roles">
                             <option value="1boy, solo male focus, slender build, fantasy rogue">Fantasy Rogue</option>
@@ -256,20 +257,21 @@
                             <option value="1boy, solo male focus, adult male, vampire">Vampire (2025 Trend)</option>
                         </optgroup>
                     </select>
-                    <label class="form-label" for="hair">Hair Style:</label>
-                    <select class="form-select" id="hair">
+                    <label class="form-label" for="hair1">Hair Style:</label>
+                    <select class="form-select" id="hair1">
                         <option value="none">None</option>
                         <option value="raven-black hair (short tousled hair:1.1)">Raven-black, Short Tousled</option>
                         <option value="silver hair (long ponytail:1.1)">Silver, Long Ponytail</option>
                         <option value="blonde hair (short cropped hair:1.1)">Blonde, Short Cropped</option>
-                        <option value="white-blonde hair (very short hair:1.1)">White-blonde, Very Short</option>
-                        <option value="purple hair (short hair:1.1, hair between eyes, bangs)">Purple, Short, Bangs (2025 Trend)</option>
-                        <option value="brown hair (short hair:1.1)" selected>Brown, Short</option>
+                        <option value="white-blonde hair (very short hair:1.1)" selected>White-blonde, Very Short</option>
+                        <option value="purple hair (short hair:1.1, hair between eyes, bangs)">Purple, Short, Bangs</option>
+                        <option value="brown hair (short hair:1.1)">Brown, Short</option>
+                        <option value="black hair (short hair:1.1)">Black, Short</option>
                         <option value="neon-blue hair (undercut style:1.1)">Neon-blue, Undercut (2025 Trend)</option>
                         <option value="fiery-red hair (spiky mohawk:1.1)">Fiery-red, Spiky Mohawk</option>
                     </select>
-                    <label class="form-label" for="hairEffect">Hair Effect:</label>
-                    <select class="form-select" id="hairEffect">
+                    <label class="form-label" for="hairEffect1">Hair Effect:</label>
+                    <select class="form-select" id="hairEffect1">
                         <option value="none">None</option>
                         <option value="windswept hair">Windswept Hair</option>
                         <option value="flowing hair">Flowing Hair</option>
@@ -278,22 +280,24 @@
                         <option value="matted with cum" class="nsfw">Matted with Cum (NSFW)</option>
                         <option value="glowing highlights">Glowing Highlights (2025 Trend)</option>
                         <option value="digital glitch strands">Digital Glitch Strands</option>
-                        <option value="hair glittering with petals" selected>Hair Glittering with Petals</option>
+                        <option value="hair glittering with petals">Hair Glittering with Petals</option>
                     </select>
-                    <label class="form-label" for="eyes">Eyes:</label>
-                    <select class="form-select" id="eyes">
+                    <label class="form-label" for="eyes1">Eyes:</label>
+                    <select class="form-select" id="eyes1">
                         <option value="none">None</option>
                         <option value="amber eyes">Amber Eyes</option>
                         <option value="ice-blue eyes">Ice-blue Eyes</option>
                         <option value="purple eyes">Purple Eyes</option>
-                        <option value="yellow-green eyes" selected>Yellow-green Eyes</option>
+                        <option value="yellow-green eyes">Yellow-green Eyes</option>
+                        <option value="blue eyes" selected>Blue Eyes</option>
+                        <option value="hazel eyes">Hazel Eyes</option>
                         <option value="glowing red eyes">Glowing Red Eyes</option>
                         <option value="seductive violet eyes" class="nsfw">Seductive Violet Eyes (NSFW)</option>
                         <option value="cybernetic implants eyes">Cybernetic Eyes (2025 Trend)</option>
                         <option value="heterochromia eyes">Heterochromia Eyes</option>
                     </select>
-                    <label class="form-label" for="pose">Pose/Expression:</label>
-                    <select class="form-select" id="pose">
+                    <label class="form-label" for="pose1">Pose/Expression:</label>
+                    <select class="form-select" id="pose1">
                         <option value="none">None</option>
                         <option value="looking at viewer">Looking at Viewer</option>
                         <option value="turn to looking at viewer">Turn to Looking at Viewer</option>
@@ -301,12 +305,13 @@
                         <option value="seductive pose" class="nsfw">Seductive Pose (NSFW)</option>
                         <option value="aroused expression" class="nsfw">Aroused Expression (NSFW)</option>
                         <option value="defiant stance">Defiant Stance</option>
-                        <option value="embracing pose">Embracing Pose (For Couples)</option>
+                        <option value="embracing pose">Embracing Pose</option>
                         <option value="fighting stance">Fighting Stance</option>
-                        <option value="squatting" selected>Squatting</option>
+                        <option value="squatting">Squatting</option>
+                        <option value="mating press" class="nsfw" selected>Mating Press (NSFW)</option>
                     </select>
-                    <label class="form-label" for="bodyDetail">Body Detail:</label>
-                    <select class="form-select" id="bodyDetail">
+                    <label class="form-label" for="bodyDetail1">Body Detail:</label>
+                    <select class="form-select" id="bodyDetail1">
                         <option value="none">None</option>
                         <option value="exposed torso" class="nsfw">Exposed Torso (NSFW)</option>
                         <option value="explicit genitalia (flaccid penis, testicles, pubic hair)" class="nsfw">Explicit Genitalia (Flaccid, NSFW)</option>
@@ -315,9 +320,10 @@
                         <option value="collarbone, navel, pelvic hair" class="nsfw">Collarbone, Navel, Pelvic Hair (NSFW)</option>
                         <option value="cybernetic augmentations">Cybernetic Augmentations (2025 Trend)</option>
                         <option value="tattoo circuits">Tattoo Circuits</option>
+                        <option value="bouncing penis, precum leaking" class="nsfw">Bouncing Penis, Precum Leaking (NSFW)</option>
                     </select>
-                    <label class="form-label" for="charExtra">Extra Detail:</label>
-                    <select class="form-select" id="charExtra">
+                    <label class="form-label" for="charExtra1">Extra Detail:</label>
+                    <select class="form-select" id="charExtra1">
                         <option value="none">None</option>
                         <option value="facial scar">Facial Scar</option>
                         <option value="erotic tattoos" class="nsfw">Erotic Tattoos (NSFW)</option>
@@ -326,7 +332,114 @@
                         <option value="holographic accessories">Holographic Accessories (2025 Trend)</option>
                         <option value="neural link ports">Neural Link Ports</option>
                         <option value="clean nails">Clean Nails</option>
-                        <option value="blush face, sweatdrop" class="nsfw" selected>Blush Face, Sweatdrop (NSFW)</option>
+                        <option value="blush face, sweatdrop" class="nsfw">Blush Face, Sweatdrop (NSFW)</option>
+                        <option value="black nails, claws, oni horns" class="nsfw" selected>Black Nails, Claws, Oni Horns (NSFW)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Character Description (Character 2) -->
+        <div class="card">
+            <div class="card-header" data-bs-toggle="collapse" data-bs-target="#character2">
+                <h2 class="mb-0">Character Description (Character 2, Optional)</h2>
+            </div>
+            <div id="character2" class="collapse show">
+                <div class="card-body">
+                    <label class="form-label" for="characterType2">Character Type:</label>
+                    <select class="form-select" id="characterType2">
+                        <option value="none">None</option>
+                        <optgroup label="Yaoi Roles">
+                            <option value="2boys, yaoi couple, athletic build, yaoi, gay" selected>Yaoi Couple (Athletic)</option>
+                            <option value="1boy, solo male focus, lean build, yaoi uke">Yaoi Uke</option>
+                            <option value="1boy, solo male focus, muscular build, yaoi seme">Yaoi Seme</option>
+                            <option value="1boy, solo male focus, slender build, bi/pan protagonist">Bi/Pan Protagonist (2025 Inclusive)</option>
+                        </optgroup>
+                        <optgroup label="Fantasy Roles">
+                            <option value="1boy, solo male focus, slender build, fantasy rogue">Fantasy Rogue</option>
+                            <option value="1boy, solo male focus, agile build, elf archer">Elf Archer</option>
+                            <option value="1boy, solo male focus, lean build, isekai protagonist">Isekai Protagonist (2025 Trend)</option>
+                            <option value="1boy, solo male focus, cybernetic enhancements, hacker hero">Cyber Hacker Hero (2025 Trend)</option>
+                            <option value="1boy, solo male focus, augmented reality user">AR User (2025 Trend)</option>
+                            <option value="1boy, solo male focus, adult male, vampire">Vampire (2025 Trend)</option>
+                        </optgroup>
+                    </select>
+                    <label class="form-label" for="hair2">Hair Style:</label>
+                    <select class="form-select" id="hair2">
+                        <option value="none">None</option>
+                        <option value="raven-black hair (short tousled hair:1.1)">Raven-black, Short Tousled</option>
+                        <option value="silver hair (long ponytail:1.1)">Silver, Long Ponytail</option>
+                        <option value="blonde hair (short cropped hair:1.1)">Blonde, Short Cropped</option>
+                        <option value="white-blonde hair (very short hair:1.1)">White-blonde, Very Short</option>
+                        <option value="purple hair (short hair:1.1, hair between eyes, bangs)">Purple, Short, Bangs</option>
+                        <option value="brown hair (short hair:1.1)">Brown, Short</option>
+                        <option value="black hair (short hair:1.1)" selected>Black, Short</option>
+                        <option value="neon-blue hair (undercut style:1.1)">Neon-blue, Undercut (2025 Trend)</option>
+                        <option value="fiery-red hair (spiky mohawk:1.1)">Fiery-red, Spiky Mohawk</option>
+                    </select>
+                    <label class="form-label" for="hairEffect2">Hair Effect:</label>
+                    <select class="form-select" id="hairEffect2">
+                        <option value="none">None</option>
+                        <option value="windswept hair">Windswept Hair</option>
+                        <option value="flowing hair">Flowing Hair</option>
+                        <option value="wavy hair">Wavy Hair</option>
+                        <option value="sweat-dampened hair" class="nsfw">Sweat-dampened Hair (NSFW)</option>
+                        <option value="matted with cum" class="nsfw">Matted with Cum (NSFW)</option>
+                        <option value="glowing highlights">Glowing Highlights (2025 Trend)</option>
+                        <option value="digital glitch strands">Digital Glitch Strands</option>
+                        <option value="hair glittering with petals">Hair Glittering with Petals</option>
+                    </select>
+                    <label class="form-label" for="eyes2">Eyes:</label>
+                    <select class="form-select" id="eyes2">
+                        <option value="none">None</option>
+                        <option value="amber eyes">Amber Eyes</option>
+                        <option value="ice-blue eyes">Ice-blue Eyes</option>
+                        <option value="purple eyes">Purple Eyes</option>
+                        <option value="yellow-green eyes">Yellow-green Eyes</option>
+                        <option value="blue eyes">Blue Eyes</option>
+                        <option value="hazel eyes" selected>Hazel Eyes</option>
+                        <option value="glowing red eyes">Glowing Red Eyes</option>
+                        <option value="seductive violet eyes" class="nsfw">Seductive Violet Eyes (NSFW)</option>
+                        <option value="cybernetic implants eyes">Cybernetic Eyes (2025 Trend)</option>
+                        <option value="heterochromia eyes">Heterochromia Eyes</option>
+                    </select>
+                    <label class="form-label" for="pose2">Pose/Expression:</label>
+                    <select class="form-select" id="pose2">
+                        <option value="none">None</option>
+                        <option value="looking at viewer">Looking at Viewer</option>
+                        <option value="turn to looking at viewer">Turn to Looking at Viewer</option>
+                        <option value="casting spell">Casting Spell</option>
+                        <option value="seductive pose" class="nsfw">Seductive Pose (NSFW)</option>
+                        <option value="aroused expression" class="nsfw">Aroused Expression (NSFW)</option>
+                        <option value="defiant stance">Defiant Stance</option>
+                        <option value="embracing pose">Embracing Pose</option>
+                        <option value="fighting stance">Fighting Stance</option>
+                        <option value="squatting">Squatting</option>
+                        <option value="mating press" class="nsfw" selected>Mating Press (NSFW)</option>
+                    </select>
+                    <label class="form-label" for="bodyDetail2">Body Detail:</label>
+                    <select class="form-select" id="bodyDetail2">
+                        <option value="none">None</option>
+                        <option value="exposed torso" class="nsfw">Exposed Torso (NSFW)</option>
+                        <option value="explicit genitalia (flaccid penis, testicles, pubic hair)" class="nsfw">Explicit Genitalia (Flaccid, NSFW)</option>
+                        <option value="explicit genitalia (erection, pubic hair, hard nipples)" class="nsfw" selected>Explicit Genitalia (Erection, NSFW)</option>
+                        <option value="flushed cheeks" class="nsfw">Flushed Cheeks (NSFW)</option>
+                        <option value="collarbone, navel, pelvic hair" class="nsfw">Collarbone, Navel, Pelvic Hair (NSFW)</option>
+                        <option value="cybernetic augmentations">Cybernetic Augmentations (2025 Trend)</option>
+                        <option value="tattoo circuits">Tattoo Circuits</option>
+                        <option value="bouncing penis, precum leaking" class="nsfw">Bouncing Penis, Precum Leaking (NSFW)</option>
+                    </select>
+                    <label class="form-label" for="charExtra2">Extra Detail:</label>
+                    <select class="form-select" id="charExtra2">
+                        <option value="none">None</option>
+                        <option value="facial scar">Facial Scar</option>
+                        <option value="erotic tattoos" class="nsfw">Erotic Tattoos (NSFW)</option>
+                        <option value="sweat beads" class="nsfw">Sweat Beads (NSFW)</option>
+                        <option value="trauma backstory" class="trend">Trauma Backstory (2025 Trend)</option>
+                        <option value="holographic accessories">Holographic Accessories (2025 Trend)</option>
+                        <option value="neural link ports">Neural Link Ports</option>
+                        <option value="clean nails">Clean Nails</option>
+                        <option value="blush face, sweatdrop" class="nsfw">Blush Face, Sweatdrop (NSFW)</option>
                     </select>
                 </div>
             </div>
@@ -358,7 +471,7 @@
                         <option value="confession under moonlight">Confession Under Moonlight</option>
                         <option value="virtual reality tryst" class="nsfw">Virtual Reality Tryst (NSFW, 2025 Trend)</option>
                         <option value="hacker rivals to lovers">Hacker Rivals to Lovers (2025 Trend)</option>
-                        <option value="imprisoned romance" class="nsfw" selected>Imprisoned Romance (NSFW, 2025 Trend)</option>
+                        <option value="imprisoned romance" class="nsfw">Imprisoned Romance (NSFW, 2025 Trend)</option>
                     </select>
                 </div>
             </div>
@@ -387,8 +500,9 @@
                             <option value="bare skin with chains" class="nsfw">Bare Skin with Chains (NSFW)</option>
                             <option value="yakuza suit (torn)" class="nsfw">Yakuza Suit (Torn, NSFW, 2025 Trend)</option>
                             <option value="neon-lit lingerie" class="nsfw">Neon-Lit Lingerie (NSFW, 2025 Trend)</option>
-                            <option value="blue jacket, shirtless, hoodie, white socks, brown cropped pants, red and white footwear" class="nsfw" selected>Hajime's Outfit (NSFW)</option>
+                            <option value="blue jacket, shirtless, hoodie, white socks, brown cropped pants, red and white footwear" class="nsfw">Hajime's Outfit (NSFW)</option>
                             <option value="mesh tank top, lavender slacks" class="nsfw">Mesh Tank Top, Lavender Slacks (NSFW)</option>
+                            <option value="naked" class="nsfw" selected>Naked (NSFW)</option>
                         </optgroup>
                     </select>
                     <label class="form-label" for="weapon">Weapon/Accessory:</label>
@@ -412,15 +526,15 @@
                         <option value="erotic piercing" class="nsfw">Erotic Piercing (NSFW)</option>
                         <option value="AR glasses">AR Glasses (2025 Trend)</option>
                         <option value="neural implant">Neural Implant (2025 Trend)</option>
-                        <option value="collar" class="nsfw" selected>Collar (NSFW)</option>
+                        <option value="collar" class="nsfw">Collar (NSFW)</option>
                     </select>
                     <label class="form-label" for="attireExtra">Extra Attire Detail:</label>
                     <select class="form-select" id="attireExtra">
                         <option value="none">None</option>
                         <option value="belt with spellbooks">Belt with Spellbooks</option>
-                        <option value="cum effects" class="nsfw">Cum Effects (NSFW)</option>
+                        <option value="cum effects" class="nsfw" selected>Cum Effects (NSFW)</option>
                         <option value="glowing circuits">Glowing Circuits (2025 Trend)</option>
-                        <option value="penis bulge, erection under clothes" class="nsfw" selected>Penis Bulge, Erection Under Clothes (NSFW)</option>
+                        <option value="penis bulge, erection under clothes" class="nsfw">Penis Bulge, Erection Under Clothes (NSFW)</option>
                         <option value="penis peek" class="nsfw">Penis Peek (NSFW)</option>
                     </select>
                 </div>
@@ -445,24 +559,24 @@
                     <label class="form-label" for="lighting2">Lighting Style 2:</label>
                     <select class="form-select" id="lighting2">
                         <option value="none">None</option>
-                        <option value="dramatic lighting" selected>Dramatic Lighting</option>
+                        <option value="dramatic lighting">Dramatic Lighting</option>
                         <option value="soft moonlight">Soft Moonlight</option>
                         <option value="sensual red glow" class="nsfw">Sensual Red Glow (NSFW)</option>
                         <option value="moonlit ritual" class="trend">Moonlit Ritual (2025 Trend)</option>
-                        <option value="warm aesthetic light">Warm Aesthetic Light</option>
+                        <option value="summer aesthetic light" selected>Summer Aesthetic Light</option>
                         <option value="holographic projection light">Holographic Projection (2025 Trend)</option>
                     </select>
                     <label class="form-label" for="atmosphere">Atmosphere:</label>
                     <select class="form-select" id="atmosphere">
                         <option value="none">None</option>
-                        <option value="soft fog">Soft Fog</option>
+                        <option value="soft fog" selected>Soft Fog</option>
                         <option value="thick fog">Thick Fog</option>
                         <option value="sparkling air">Sparkling Air</option>
                         <option value="steamy haze" class="nsfw">Steamy Haze (NSFW)</option>
                         <option value="digital static">Digital Static (2025 Trend)</option>
                         <option value="radioactive glow">Radioactive Glow (2025 Trend)</option>
                         <option value="very awe-inspiring">Very Awe-inspiring</option>
-                        <option value="dark theme" selected>Dark Theme</option>
+                        <option value="dark theme">Dark Theme</option>
                     </select>
                     <label class="form-label" for="lightColor">Light Color:</label>
                     <select class="form-select" id="lightColor">
@@ -474,7 +588,7 @@
                         <option value="electric green">Electric Green (2025 Trend)</option>
                     </select>
                     <label class="form-label" for="lightExtra">Extra Lighting (Optional):</label>
-                    <input type="text" class="form-control" id="lightExtra" placeholder="e.g., soft glow, blown out halo">
+                    <input type="text" class="form-control" id="lightExtra" placeholder="e.g., soft glow, blown out halo" value="soft glow">
                 </div>
             </div>
         </div>
@@ -489,7 +603,7 @@
                     <label class="form-label" for="background">Background:</label>
                     <select class="form-select" id="background">
                         <option value="none">None</option>
-                        <option value="blurred background">Blurred Background</option>
+                        <option value="blurred background" selected>Blurred Background</option>
                         <option value="blurred forest background">Blurred Forest Background</option>
                         <option value="ancient ruins">Ancient Ruins</option>
                         <option value="mystic cavern">Mystic Cavern</option>
@@ -498,8 +612,9 @@
                         <option value="cyber cityscape">Cyber Cityscape (2025 Trend)</option>
                         <option value="virtual reality grid">Virtual Reality Grid (2025 Trend)</option>
                         <option value="wasteland ruins">Wasteland Ruins (2025 Trend)</option>
-                        <option value="indoors" selected>Indoors</option>
+                        <option value="indoors">Indoors</option>
                         <option value="street market">Street Market</option>
+                        <option value="meadow, night, starry sky">Meadow, Night, Starry Sky</option>
                     </select>
                     <label class="form-label" for="bgEffect">Background Effect:</label>
                     <select class="form-select" id="bgEffect">
@@ -510,7 +625,8 @@
                         <option value="blown out halo">Blown Out Halo</option>
                         <option value="neon rain">Neon Rain (2025 Trend)</option>
                         <option value="data stream overlays">Data Stream Overlays (2025 Trend)</option>
-                        <option value="straw" selected>Straw</option>
+                        <option value="straw">Straw</option>
+                        <option value="nebula" selected>Nebula</option>
                     </select>
                     <label class="form-label" for="bgExtra">Extra Background Detail (Optional):</label>
                     <input type="text" class="form-control" id="bgExtra" placeholder="e.g., glowing mushrooms, silk sheets (NSFW)">
@@ -530,12 +646,12 @@
                         <option value="none">None</option>
                         <option value="intense expression">Intense Expression</option>
                         <option value="focused gaze">Focused Gaze</option>
-                        <option value="moaning expression" class="nsfw">Moaning Expression (NSFW)</option>
+                        <option value="moaning expression" class="nsfw" selected>Moaning Expression (NSFW)</option>
                         <option value="shocked expression" class="nsfw">Shocked Expression (NSFW)</option>
                         <option value="erotic smirk" class="nsfw">Erotic Smirk (NSFW)</option>
                         <option value="determined glare">Determined Glare</option>
                         <option value="playful wink">Playful Wink (2025 Trend)</option>
-                        <option value="expressive bashful face: soft smile, glancing sideways, biting lip" class="nsfw" selected>Expressive Bashful Face (NSFW)</option>
+                        <option value="expressive bashful face: soft smile, glancing sideways, biting lip" class="nsfw">Expressive Bashful Face (NSFW)</option>
                     </select>
                     <label class="form-label" for="magicEffect">Magical Effect:</label>
                     <select class="form-select" id="magicEffect">
@@ -546,6 +662,7 @@
                         <option value="digital code streams">Digital Code Streams (2025 Trend)</option>
                         <option value="quantum particles">Quantum Particles (2025 Trend)</option>
                         <option value="transparent ghost" class="nsfw">Transparent Ghost (NSFW)</option>
+                        <option value="green transparent tentacles" class="nsfw" selected>Green Transparent Tentacles (NSFW)</option>
                     </select>
                     <label class="form-label" for="binding">Binding Element:</label>
                     <select class="form-select" id="binding">
@@ -554,7 +671,7 @@
                         <option value="arcane tendrils">Arcane Tendrils</option>
                         <option value="semi-transparent tentacles" class="nsfw">Semi-transparent Tentacles (NSFW)</option>
                         <option value="cybernetic restraints">Cybernetic Restraints (2025 Trend)</option>
-                        <option value="shibari:1.5" class="nsfw" selected>Shibari (NSFW)</option>
+                        <option value="shibari:1.5" class="nsfw">Shibari (NSFW)</option>
                     </select>
                     <label class="form-label" for="energy">Energy Effect:</label>
                     <select class="form-select" id="energy">
@@ -564,11 +681,11 @@
                         <option value="sweat-glistened skin" class="nsfw">Sweat-glistened Skin (NSFW)</option>
                         <option value="plasma bursts">Plasma Bursts (2025 Trend)</option>
                         <option value="tentacles grabbing pectorals" class="nsfw">Tentacles Grabbing Pectorals (NSFW)</option>
-                        <option value="anal penetration" class="nsfw">Anal Penetration (NSFW)</option>
-                        <option value="horny" class="nsfw" selected>Horny (NSFW)</option>
+                        <option value="anal penetration" class="nsfw" selected>Anal Penetration (NSFW)</option>
+                        <option value="horny" class="nsfw">Horny (NSFW)</option>
                     </select>
                     <label class="form-label" for="addExtra">Extra Element (Optional):</label>
-                    <input type="text" class="form-control" id="addExtra" placeholder="e.g., ghost sex, tentacle penetration (NSFW)">
+                    <input type="text" class="form-control" id="addExtra" placeholder="e.g., tentacle fellatio, ghost sex (NSFW)">
                 </div>
             </div>
         </div>
@@ -584,10 +701,10 @@
                     <select class="form-select" id="interaction">
                         <option value="none">None</option>
                         <option value="ghost sex" class="nsfw">Ghost Sex (NSFW)</option>
-                        <option value="tentacle interaction" class="nsfw">Tentacle Interaction (NSFW)</option>
+                        <option value="tentacle interaction" class="nsfw" selected>Tentacle Interaction (NSFW)</option>
                         <option value="vampire bite" class="nsfw">Vampire Bite (NSFW, 2025 Trend)</option>
                         <option value="cybernetic interface">Cybernetic Interface (2025 Trend)</option>
-                        <option value="trapped in cage, imprisoned" class="nsfw" selected>Trapped in Cage, Imprisoned (NSFW)</option>
+                        <option value="trapped in cage, imprisoned" class="nsfw">Trapped in Cage, Imprisoned (NSFW)</option>
                     </select>
                     <label class="form-label" for="dialogueExtra">Extra Dialogue (Optional):</label>
                     <input type="text" class="form-control" id="dialogueExtra" placeholder="e.g., moaning sounds (NSFW), confession lines">
@@ -605,7 +722,7 @@
                     <label class="form-label" for="envDetail">Environment Detail:</label>
                     <select class="form-select" id="envDetail">
                         <option value="none">None</option>
-                        <option value="cow cage, farm" selected>Cow Cage, Farm</option>
+                        <option value="cow cage, farm">Cow Cage, Farm</option>
                         <option value="street market">Street Market</option>
                         <option value="cyberpunk alley">Cyberpunk Alley (2025 Trend)</option>
                         <option value="isekai tavern">Isekai Tavern (2025 Trend)</option>
@@ -671,13 +788,20 @@
                     effect2: document.getElementById('effect2').value,
                     bokeh: document.getElementById('bokeh').value,
                     effectExtra: document.getElementById('effectExtra').value,
-                    characterType: document.getElementById('characterType').value,
-                    hair: document.getElementById('hair').value,
-                    hairEffect: document.getElementById('hairEffect').value,
-                    eyes: document.getElementById('eyes').value,
-                    pose: document.getElementById('pose').value,
-                    bodyDetail: document.getElementById('bodyDetail').value,
-                    charExtra: document.getElementById('charExtra').value,
+                    characterType1: document.getElementById('characterType1').value,
+                    hair1: document.getElementById('hair1').value,
+                    hairEffect1: document.getElementById('hairEffect1').value,
+                    eyes1: document.getElementById('eyes1').value,
+                    pose1: document.getElementById('pose1').value,
+                    bodyDetail1: document.getElementById('bodyDetail1').value,
+                    charExtra1: document.getElementById('charExtra1').value,
+                    characterType2: document.getElementById('characterType2').value,
+                    hair2: document.getElementById('hair2').value,
+                    hairEffect2: document.getElementById('hairEffect2').value,
+                    eyes2: document.getElementById('eyes2').value,
+                    pose2: document.getElementById('pose2').value,
+                    bodyDetail2: document.getElementById('bodyDetail2').value,
+                    charExtra2: document.getElementById('charExtra2').value,
                     tropeMain: document.getElementById('tropeMain').value,
                     tropeExtra: document.getElementById('tropeExtra').value,
                     attire: document.getElementById('attire').value,
@@ -715,7 +839,7 @@
 
                 const allParts = [];
 
-                // Order: char inspiration, camera, effects, expression, lighting, character, atmosphere, background, attire, additional, dialogue, environment, trope, art
+                // Order: char inspiration, camera, effects, expression, lighting, character 1, character 2, atmosphere, background, attire, additional, dialogue, environment, trope, art
                 if (inputs.charInspiration && inputs.charInspiration !== 'none') allParts.push(inputs.charInspiration);
 
                 [inputs.cameraShot, inputs.cameraAngle, inputs.cameraExtra].forEach(part => {
@@ -734,7 +858,11 @@
                     if (part && part !== 'none') allParts.push(part);
                 });
 
-                [filterNSFW(inputs.characterType, 'characterType'), inputs.hair, filterNSFW(inputs.hairEffect, 'hairEffect'), filterNSFW(inputs.eyes, 'eyes'), filterNSFW(inputs.pose, 'pose'), filterNSFW(inputs.bodyDetail, 'bodyDetail'), filterNSFW(inputs.charExtra, 'charExtra'), filterNSFW(inputs.accessory, 'accessory')].forEach(part => {
+                [filterNSFW(inputs.characterType1, 'characterType1'), inputs.hair1, filterNSFW(inputs.hairEffect1, 'hairEffect1'), filterNSFW(inputs.eyes1, 'eyes1'), filterNSFW(inputs.pose1, 'pose1'), filterNSFW(inputs.bodyDetail1, 'bodyDetail1'), filterNSFW(inputs.charExtra1, 'charExtra1')].forEach(part => {
+                    if (part && part !== 'none') allParts.push(part);
+                });
+
+                [filterNSFW(inputs.characterType2, 'characterType2'), inputs.hair2, filterNSFW(inputs.hairEffect2, 'hairEffect2'), filterNSFW(inputs.eyes2, 'eyes2'), filterNSFW(inputs.pose2, 'pose2'), filterNSFW(inputs.bodyDetail2, 'bodyDetail2'), filterNSFW(inputs.charExtra2, 'charExtra2')].forEach(part => {
                     if (part && part !== 'none') allParts.push(part);
                 });
 
@@ -746,7 +874,7 @@
                     if (part && part !== 'none') allParts.push(part);
                 });
 
-                [filterNSFW(inputs.attire, 'attire'), inputs.weapon, filterNSFW(inputs.attireExtra, 'attireExtra')].forEach(part => {
+                [filterNSFW(inputs.attire, 'attire'), inputs.weapon, filterNSFW(inputs.attireExtra, 'attireExtra'), filterNSFW(inputs.accessory, 'accessory')].forEach(part => {
                     if (part && part !== 'none') allParts.push(part);
                 });
 
@@ -796,7 +924,7 @@
                 if (el.tagName === 'SELECT') {
                     el.selectedIndex = el.querySelector('option[selected]') ? [...el.options].findIndex(opt => opt.selected) : 0;
                 } else if (el.type === 'text') {
-                    el.value = '';
+                    el.value = el.getAttribute('value') || '';
                 } else if (el.type === 'checkbox') {
                     el.checked = true; // Reset NSFW to enabled
                 }
@@ -805,4 +933,4 @@
         }
     </script>
 </body>
-  </html>
+                            </html>
