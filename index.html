@@ -323,8 +323,7 @@
                         <option value="ombre purple-blue hair (long flowing locks:1.1)">Ombre Purple-Blue, Long Flowing</option>
                         <option value="jet-black hair (wet slicked-back:1.1)" class="nsfw">Jet-black, Wet Slicked-back (NSFW)</option>
                         <option value="silver-gray hair (braided locks:1.1)">Silver-gray, Braided Locks</option>
-                        <option value="golden hair (messy bedhead:1.1)">Golden, Messy Bedhead</option>
-                        <option value="multicolored hair (holographic streaks:1.1)">Multicolored, Holographic Streaks (2025 Trend)</option>
+                        <option value="golden hair (mess Facade
                     </select>
                     <label class="form-label" for="hairEffect1" id="hairEffect1Label">Hair Effect:</label>
                     <select class="form-select" id="hairEffect1" aria-labelledby="hairEffect1Label">
@@ -435,7 +434,7 @@
                         <option value="glowing demonic tail" class="nsfw">Glowing Demonic Tail (NSFW)</option>
                         <option value="nipple piercings" class="nsfw">Nipple Piercings (NSFW)</option>
                         <option value="ethereal wings">Ethereal Wings</option>
-                        <option value="vampiric fangs">Vampiric Fangs (2025 Trend)</option>
+                        <option value="vampiric fangs" selected>Vampiric Fangs (2025 Trend)</option>
                         <option value="circuit-patterned skin">Circuit-patterned Skin (2025 Trend)</option>
                     </select>
                 </div>
@@ -654,7 +653,7 @@
                             <option value="rune-etched robes">Rune-etched Robes</option>
                             <option value="tattered leather armor">Tattered Leather Armor</option>
                             <option value="ripped fantasy clothes">Ripped Fantasy Clothes</option>
-                            <option value="vampire cape">Vampire Cape (2025 Trend)</option>
+                            <option value="vampire cape" selected>Vampire Cape (2025 Trend)</option>
                             <option value="enchanted cyber-suit">Enchanted Cyber-Suit (2025 Trend)</option>
                         </optgroup>
                         <optgroup label="NSFW Attire">
@@ -725,7 +724,7 @@
                         <option value="dramatic lighting">Dramatic Lighting</option>
                         <option value="soft moonlight">Soft Moonlight</option>
                         <option value="sensual red glow" class="nsfw">Sensual Red Glow (NSFW)</option>
-                        <option value="moonlit ritual" class="trend">Moonlit Ritual (2025 Trend)</option>
+                        <option value="moonlit ritual" selected>Moonlit Ritual (2025 Trend)</option>
                         <option value="summer aesthetic light">Summer Aesthetic Light</option>
                         <option value="holographic projection light">Holographic Projection (2025 Trend)</option>
                     </select>
@@ -872,7 +871,7 @@
                         <option value="none">None</option>
                         <option value="ghost sex" class="nsfw">Ghost Sex (NSFW)</option>
                         <option value="tentacle interaction" class="nsfw">Tentacle Interaction (NSFW)</option>
-                        <option value="vampire bite" class="nsfw">Vampire Bite (NSFW, 2025 Trend)</option>
+                        <option value="vampire bite" class="nsfw" selected>Vampire Bite (NSFW, 2025 Trend)</option>
                         <option value="cybernetic interface">Cybernetic Interface (2025 Trend)</option>
                         <option value="trapped in cage, imprisoned" class="nsfw">Trapped in Cage, Imprisoned (NSFW)</option>
                         <option value="fucking, sex" class="nsfw">Fucking, Sex (NSFW)</option>
@@ -930,15 +929,22 @@
 
     </div>
 
-        <!-- Bootstrap 5 JS and Popper -->
+    <!-- Bootstrap 5 JS and Popper -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
     <script src="popper.min.js" onerror="this.src='fallback/popper.min.js'"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
     <script src="bootstrap.min.js" onerror="this.src='fallback/bootstrap.min.js'"></script>
     <!-- Anime.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.2/anime.min.js" integrity="sha512-aNMyYYxdIxIaot0Y1/4M8Q16A1P3+pel2dp3pZ3yNKV4Cem2v3PCyFMP7kXGlhLBpXL+PHo08zmuO/9o+7wC6lw==" crossorigin="anonymous"></script>
-    <script src="anime.min.js" onerror="this.src='fallback/anime.min.js'"></script>
+    <script src="fallback/anime.min.js" onerror="console.error('Anime.js fallback failed to load')"></script>
     <script>
+        // Log Anime.js load status
+        if (typeof anime !== 'undefined') {
+            console.log('Anime.js loaded successfully');
+        } else {
+            console.error('Anime.js failed to load');
+        }
+
         // Field registry for maintainability
         const fields = [
             { id: 'charInspiration', type: 'select' },
@@ -960,7 +966,7 @@
             { id: 'bodyDetail1', type: 'select' },
             { id: 'charExtra1', type: 'select' },
             { id: 'characterType2', type: 'select' },
-            { id: 'hair2', type: 'select' },
+                        { id: 'hair2', type: 'select' },
             { id: 'hairEffect2', type: 'select' },
             { id: 'eyes2', type: 'select' },
             { id: 'pose2', type: 'select' },
@@ -1061,14 +1067,32 @@
         [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
 
         /**
+         * Animates a button with fallback if Anime.js is unavailable.
+         * @param {string} target - CSS selector for the target element.
+         * @param {string} originalColor - Original background color.
+         */
+        function animateButton(target, originalColor) {
+            if (typeof anime === 'undefined') {
+                console.warn('Anime.js not loaded, skipping animation');
+                return;
+            }
+            anime({
+                targets: target,
+                backgroundColor: ['#ff6f91', originalColor],
+                duration: 300,
+                easing: 'easeInOutQuad',
+                direction: 'alternate'
+            });
+        }
+
+        /**
          * Sanitizes text input to prevent XSS and ensure compatibility.
          * @param {string} input - The input string to sanitize.
          * @returns {string} Sanitized string.
          */
         function sanitizeInput(input) {
             if (!input) return '';
-            return input.replace(/[<>"'&;]/g, '') // Remove HTML and special characters
-                        .substring(0, 100); // Enforce max length
+            return input.replace(/[<>"'&;]/g, '').substring(0, 100);
         }
 
         /**
@@ -1079,19 +1103,12 @@
                 const nsfwToggle = document.getElementById('nsfwToggle').checked;
                 const inputs = {};
 
-                // Collect inputs from fields
                 fields.forEach(field => {
                     const element = document.getElementById(field.id);
                     if (!element) throw new Error(`Field ${field.id} not found`);
                     inputs[field.id] = field.type === 'text' ? sanitizeInput(element.value) : element.value;
                 });
 
-                /**
-                 * Filters NSFW options if toggle is off.
-                 * @param {string} value - The selected value.
-                 * @param {string} id - The field ID.
-                 * @returns {string} Filtered value.
-                 */
                 const filterNSFW = (value, id) => {
                     if (!nsfwToggle) {
                         const selectElement = document.getElementById(id);
@@ -1103,8 +1120,6 @@
                 };
 
                 const allParts = [];
-
-                // Ordered prompt construction
                 const promptOrder = [
                     'charInspiration',
                     'cameraShot', 'cameraAngle', 'cameraExtra',
@@ -1184,15 +1199,15 @@
                 altTextElement.textContent = `Alt Text: ${altText}`;
 
                 // Animate prompt appearance
-                anime({
-                    targets: '#finalPrompt',
-                    opacity: [0, 1],
-                    translateY: [20, 0],
-                    duration: 500,
-                    easing: 'easeOutQuad'
-                });
-
-                // Update preview
+                if (typeof anime !== 'undefined') {
+                    anime({
+                        targets: '#finalPrompt',
+                        opacity: [0, 1],
+                        translateY: [20, 0],
+                        duration: 500,
+                        easing: 'easeOutQuad'
+                    });
+                }
                 updatePreview();
             } catch (error) {
                 console.error('Error generating prompt:', error);
@@ -1268,13 +1283,7 @@
                 if (navigator.clipboard) {
                     navigator.clipboard.writeText(finalPrompt).then(() => {
                         alert('Prompt copied to clipboard!');
-                        anime({
-                            targets: '.btn-secondary',
-                            backgroundColor: ['#ff6f91', '#2d1b4e'],
-                            duration: 300,
-                            easing: 'easeInOutQuad',
-                            direction: 'alternate'
-                        });
+                        animateButton('.btn-secondary', '#2d1b4e');
                     }).catch(err => {
                         console.error('Failed to copy:', err);
                         showClipboardFallback(finalPrompt);
@@ -1409,13 +1418,7 @@
                 updateNSFWState();
 
                 // Animate reset button
-                anime({
-                    targets: '.btn-reset',
-                    backgroundColor: ['#6c757d', '#ff6f91'],
-                    duration: 300,
-                    easing: 'easeInOutQuad',
-                    direction: 'alternate'
-                });
+                animateButton('.btn-reset', '#6c757d');
             } catch (error) {
                 console.error('Error resetting defaults:', error);
                 document.getElementById('finalPrompt').textContent = `Error: ${error.message}`;
