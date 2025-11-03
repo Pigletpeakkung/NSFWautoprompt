@@ -1,0 +1,2711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Advanced Male Character Prompt Generator Pro</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #1e3a8a;
+      --secondary: #1e40af;
+      --accent: #dc2626;
+      --success: #059669;
+      --bg: #f0f9ff;
+      --doujin-pink: #ff6b9d;
+      --doujin-purple: #c084fc;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    html, body {
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+      color: #1f2937;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding: 1rem;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    header h1 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, var(--primary), var(--doujin-purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .card {
+      border: none;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      transition: all 0.3s ease;
+      margin-bottom: 1rem;
+      background: #fff;
+    }
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    }
+    .card-header {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: #fff;
+      border-radius: 10px 10px 0 0;
+      padding: 0.75rem 1rem;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.3s;
+    }
+    .card-header h5 {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 600;
+    }
+    .card-header:hover {
+      background: linear-gradient(135deg, var(--secondary), var(--primary));
+    }
+    .card-body {
+      padding: 1rem;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      border: none;
+      transition: all 0.3s;
+      font-weight: 600;
+      padding: 0.6rem 1.2rem;
+      box-shadow: 0 2px 8px rgba(30, 58, 138, 0.3);
+    }
+    .btn-primary:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(30, 58, 138, 0.4);
+    }
+    .btn-success {
+      background-color: var(--success);
+      border: none;
+      padding: 0.6rem 1.2rem;
+    }
+    .btn-accent {
+      background-color: var(--accent);
+      color: #fff;
+      border: none;
+      padding: 0.6rem 1.2rem;
+    }
+    .btn-doujin {
+      background: linear-gradient(135deg, var(--doujin-pink), var(--doujin-purple));
+      color: #fff;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      font-weight: 600;
+    }
+    .form-select, .form-control, textarea {
+      border-radius: 6px;
+      border: 1px solid #cbd5e1;
+      transition: all 0.2s;
+      font-size: 0.95rem;
+    }
+    .form-select:focus, .form-control:focus, textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
+      outline: none;
+    }
+    #output {
+      display: none;
+      font-family: 'Courier New', monospace;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      background: #fff;
+      border-left: 5px solid var(--primary);
+      font-size: 0.9rem;
+      line-height: 1.7;
+      overflow-y: auto;
+      max-height: 500px;
+      color: #1f2937;
+      animation: slideIn 0.3s ease-out;
+    }
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .quality-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      padding: 0.5rem 0;
+    }
+    .quality-badge {
+      background: #dbeafe;
+      color: #0369a1;
+      padding: 0.4rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 1px solid #93c5fd;
+      white-space: nowrap;
+      user-select: none;
+    }
+    .quality-badge:hover {
+      transform: scale(1.08);
+      background: #bfdbfe;
+    }
+    .quality-badge.active {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+      box-shadow: 0 0 8px rgba(30, 58, 138, 0.3);
+    }
+    .section-title {
+      font-weight: 700;
+      color: var(--primary);
+      margin: 1.2rem 0 0.8rem 0;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 1.1rem;
+    }
+    .stats {
+      font-size: 0.85rem;
+      color: #6b7280;
+      padding: 1rem;
+      background: rgba(226, 232, 240, 0.5);
+      border-radius: 8px;
+      text-align: center;
+      margin-top: 1rem;
+    }
+    .tab-content {
+      background: rgba(255,255,255,0.98);
+      padding: 1.2rem;
+      border-radius: 0 0 10px 10px;
+      min-height: 400px;
+    }
+    .nav-tabs {
+      border-bottom: 2px solid var(--primary);
+      background: rgba(255,255,255,0.9);
+      border-radius: 10px 10px 0 0;
+    }
+    .nav-link {
+      color: #6b7280;
+      border: none;
+      font-weight: 500;
+      transition: all 0.2s;
+      font-size: 0.9rem;
+    }
+    .nav-link:hover {
+      color: var(--primary);
+    }
+    .nav-link.active {
+      color: #fff !important;
+      background: var(--primary) !important;
+      border-radius: 6px 6px 0 0;
+    }
+    label {
+      font-weight: 600;
+      color: #1f2937;
+      margin-bottom: 0.4rem;
+      font-size: 0.95rem;
+      display: block;
+    }
+    .row {
+      margin-bottom: 0.5rem;
+    }
+    .btn-group-custom {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin: 1rem 0;
+    }
+    small.text-muted {
+      font-size: 0.8rem;
+      color: #6b7280;
+    }
+    .badge {
+      font-size: 0.75rem;
+    }
+    .collapse {
+      transition: height 0.3s ease;
+    }
+    
+    /* PREVIEW CARD */
+    .preview-card {
+      background: linear-gradient(135deg, #f0f9ff 0%, #e0e7ff 100%);
+      border-radius: 10px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .preview-avatar {
+      background: linear-gradient(135deg, var(--primary), var(--doujin-purple));
+      border-radius: 50%;
+      width: 120px;
+      height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem;
+      box-shadow: 0 4px 12px rgba(30, 58, 138, 0.3);
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    .preview-avatar i {
+      color: #fff;
+      font-size: 4rem;
+    }
+    .preview-details {
+      background: #fff;
+      padding: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+    .preview-details p {
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+    }
+    .preview-details strong {
+      color: var(--primary);
+      min-width: 100px;
+      display: inline-block;
+    }
+    
+    /* PRESET CARDS */
+    .preset-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+      margin: 1rem 0;
+    }
+    .preset-card {
+      background: linear-gradient(135deg, #fff 0%, #f8fafc 100%);
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 1.5rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-align: center;
+    }
+    .preset-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+      border-color: var(--primary);
+    }
+    .preset-card i {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      background: linear-gradient(135deg, var(--primary), var(--doujin-purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .preset-card h5 {
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: var(--primary);
+    }
+    .preset-card p {
+      font-size: 0.85rem;
+      color: #6b7280;
+      margin: 0;
+    }
+    
+    /* DOUJINSHI STYLE INDICATOR */
+    .doujin-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--doujin-pink), var(--doujin-purple));
+      color: #fff;
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-left: 0.5rem;
+    }
+    
+    /* LOADING ANIMATION */
+    .loading {
+      display: none;
+      text-align: center;
+      padding: 2rem;
+    }
+    .loading.active {
+      display: block;
+    }
+    .spinner {
+      border: 4px solid #f3f4f6;
+      border-top: 4px solid var(--primary);
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="text-center mb-3">
+      <h1><i class="fas fa-male"></i> Advanced Male Character Prompt Generator</h1>
+      <p class="text-muted small">Professional AI-ready prompts for character art & doujinshi illustration</p>
+    </header>
+
+    <!-- QUICK PRESET CARDS -->
+    <div class="card mb-3">
+      <div class="card-header bg-success">
+        <h5><i class="fas fa-bolt"></i> Quick Presets - Click to Load</h5>
+      </div>
+      <div class="card-body">
+        <div class="preset-grid">
+          <div class="preset-card" onclick="loadPreset('doujin_bishonen')">
+            <i class="fas fa-heart"></i>
+            <h5>Doujinshi Bishonen <span class="doujin-badge">Popular</span></h5>
+            <p>Elegant flower boy style with soft features</p>
+          </div>
+          <div class="preset-card" onclick="loadPreset('doujin_muscular')">
+            <i class="fas fa-dumbbell"></i>
+            <h5>Doujinshi Athletic</h5>
+            <p>Muscular physique with defined abs</p>
+          </div>
+          <div class="preset-card" onclick="loadPreset('doujin_supernatural')">
+            <i class="fas fa-dragon"></i>
+            <h5>Fantasy Supernatural</h5>
+            <p>Fox ears, tails, mystical features</p>
+          </div>
+          <div class="preset-card" onclick="loadPreset('doujin_wet')">
+            <i class="fas fa-droplet"></i>
+            <h5>Wet & Glistening <span class="doujin-badge">Hot</span></h5>
+            <p>Soaking wet skin, water effects</p>
+          </div>
+          <div class="preset-card" onclick="loadPreset('cyberpunk_hacker')">
+            <i class="fas fa-microchip"></i>
+            <h5>Cyberpunk Hacker</h5>
+            <p>Neon lights, tech implants</p>
+          </div>
+          <div class="preset-card" onclick="loadPreset('vampire_lord')">
+            <i class="fas fa-skull"></i>
+            <h5>Vampire Lord</h5>
+            <p>Dark elegant immortal beauty</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LIVE PREVIEW CARD -->
+    <div class="preview-card" id="previewCard" style="display:none;">
+      <h5 class="text-center mb-3"><i class="fas fa-eye"></i> Live Character Preview</h5>
+      <div class="row">
+        <div class="col-md-3 text-center">
+          <div class="preview-avatar">
+            <i class="fas fa-user"></i>
+          </div>
+          <p><strong id="previewName">Your Character</strong></p>
+        </div>
+        <div class="col-md-9">
+          <div class="preview-details">
+            <p><strong>Type:</strong> <span id="prevArch">-</span></p>
+            <p><strong>Hair:</strong> <span id="prevHair">-</span></p>
+            <p><strong>Eyes:</strong> <span id="prevEyes">-</span></p>
+            <p><strong>Skin:</strong> <span id="prevSkin">-</span></p>
+            <p><strong>Body:</strong> <span id="prevBody">-</span></p>
+            <p><strong>Pose:</strong> <span id="prevPose">-</span></p>
+            <p><strong>Special:</strong> <span id="prevSpecial">-</span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <ul class="nav nav-tabs mb-0" role="tablist">
+      <li class="nav-item">
+        <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#charTab" type="button">
+          <i class="fas fa-user"></i> Character
+        </button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#appearanceTab" type="button">
+          <i class="fas fa-face-smile"></i> Appearance
+        </button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#bodyTab" type="button">
+          <i class="fas fa-dumbbell"></i> Body
+        </button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#poseTab" type="button">
+          <i class="fas fa-person-hiking"></i> Pose
+        </button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#envTab" type="button">
+          <i class="fas fa-globe"></i> Environment
+        </button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#effectsTab" type="button">
+          <i class="fas fa-wand-sparkles"></i> Doujin Effects
+        </button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#qualityTab" type="button">
+          <i class="fas fa-star"></i> Quality
+        </button>
+      </li>
+    </ul>
+
+    <div class="tab-content">
+      <!-- CHARACTER TAB -->
+      <div class="tab-pane fade show active" id="charTab" role="tabpanel">
+        <div class="section-title"><i class="fas fa-user-tie"></i> Character Archetype</div>
+        <div class="card">
+          <div class="card-header" data-bs-toggle="collapse" data-bs-target="#archeCard">
+            <h5>Character Type (15 Options)</h5>
+          </div>
+          <div class="collapse show" id="archeCard">
+            <div class="card-body">
+              <select id="characterArchetype" class="form-select" onchange="updatePreview()">
+                <option value="">-- None --</option>
+                <option value="1boy solo male focus noble warrior prince regal bearing">Noble warrior prince with regal bearing</option>
+                <option value="1boy solo male focus cyberpunk hacker tech implants">Cyberpunk hacker with tech implants</option>
+                <option value="1boy solo male focus mystical sorcerer dark magic">Mystical sorcerer channeling dark magic</option>
+                <option value="1boy solo male focus space commander intergalactic">Space commander leading fleet</option>
+                <option value="1boy solo male focus demon slayer battle hardened">Demon slayer battle hardened</option>
+                                <option value="1boy solo male focus underworld assassin mysterious">Underworld assassin shrouded in mystery</option>
+                <option value="1boy solo male focus ancient vampire immortal elegant">Ancient vampire immortal elegant</option>
+                <option value="1boy solo male focus rebel knight against tyranny">Rebel knight against tyranny</option>
+                <option value="1boy solo male focus mad scientist dark experiments">Mad scientist conducting experiments</option>
+                <option value="1boy solo male focus time traveler dimensional">Time traveler from distant era</option>
+                <option value="1boy solo male focus supernatural hunter tracking creatures">Supernatural hunter tracking creatures</option>
+                <option value="1boy solo male focus dark lord commanding legions">Dark lord commanding legions</option>
+                <option value="1boy solo male focus fallen angel redemption">Fallen angel seeking redemption</option>
+                <option value="1boy solo male focus pirate captain high seas">Pirate captain ruling high seas</option>
+                <option value="1boy solo male focus ronin wandering samurai">Ronin wandering samurai masterless</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-title"><i class="fas fa-calendar"></i> Age & Build</div>
+        <div class="card">
+          <div class="card-header" data-bs-toggle="collapse" data-bs-target="#ageCard">
+            <h5>Age Group & Body Frame</h5>
+          </div>
+          <div class="collapse show" id="ageCard">
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="ageGroup">Age Group</label>
+                  <select id="ageGroup" class="form-select" onchange="updatePreview()">
+                    <option value="">-- None --</option>
+                    <option value="late teens 18-19">Late teens (18-19)</option>
+                    <option value="young adult 20-25">Young adult (20-25)</option>
+                    <option value="adult male 25-30">Adult male (25-30)</option>
+                    <option value="mature adult 30-40">Mature adult (30-40)</option>
+                    <option value="seasoned 40-50">Seasoned (40-50)</option>
+                    <option value="distinguished elder 50+">Distinguished elder (50+)</option>
+                    <option value="ageless timeless immortal">Ageless timeless immortal</option>
+                  </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="bodyFrame">Body Frame</label>
+                  <select id="bodyFrame" class="form-select" onchange="updatePreview()">
+                    <option value="">-- None --</option>
+                    <option value="lean athletic toned">Lean athletic toned</option>
+                    <option value="muscular powerful built">Muscular powerful built</option>
+                    <option value="bulky massive bodybuilder">Bulky massive bodybuilder</option>
+                    <option value="tall slender graceful">Tall slender graceful</option>
+                    <option value="stocky robust solid">Stocky robust solid</option>
+                    <option value="lithe agile nimble">Lithe agile nimble</option>
+                    <option value="otherworldly ethereal androgynous">Otherworldly ethereal androgynous</option>
+                    <option value="imposing towering giant">Imposing towering giant</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- APPEARANCE TAB -->
+      <div class="tab-pane fade" id="appearanceTab" role="tabpanel">
+        <div class="section-title"><i class="fas fa-face-smile"></i> Face & Features</div>
+        <div class="card">
+          <div class="card-header" data-bs-toggle="collapse" data-bs-target="#faceCard">
+            <h5>Facial Structure</h5>
+          </div>
+          <div class="collapse show" id="faceCard">
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="faceType">Face Shape</label>
+                  <select id="faceType" class="form-select" onchange="updatePreview()">
+                    <option value="">-- None --</option>
+                    <option value="chiseled angular jawline sharp">Chiseled angular jawline sharp</option>
+                    <option value="strong square jaw masculine">Strong square jaw masculine</option>
+                    <option value="sharp defined features striking">Sharp defined features striking</option>
+                    <option value="soft masculine gentle face">Soft masculine gentle face</option>
+                    <option value="rugged weathered battle scarred">Rugged weathered battle scarred</option>
+                    <option value="ethereal beautiful androgynous">Ethereal beautiful androgynous</option>
+                    <option value="intimidating severe harsh">Intimidating severe harsh</option>
+                    <option value="refined elegant noble">Refined elegant noble</option>
+                  </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="facialHair">Facial Hair</label>
+                  <select id="facialHair" class="form-select" onchange="updatePreview()">
+                    <option value="">-- None --</option>
+                    <option value="clean shaved smooth">Clean shaved smooth</option>
+                    <option value="light stubble">Light stubble 5 o'clock shadow</option>
+                    <option value="full beard thick">Full beard thick</option>
+                    <option value="rugged unkempt beard">Rugged unkempt beard</option>
+                    <option value="perfectly groomed beard">Perfectly groomed beard</option>
+                    <option value="goatee stylized">Goatee stylized</option>
+                    <option value="mustache handlebar">Mustache handlebar</option>
+                    <option value="sideburns mutton chops">Sideburns mutton chops</option>
+                    <option value="soul patch small">Soul patch small</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-title"><i class="fas fa-droplet"></i> Hair Details</div>
+        <div class="card">
+          <div class="card-header" data-bs-toggle="collapse" data-bs-target="#hairCard">
+            <h5>Hair Style & Color</h5>
+          </div>
+          <div class="collapse show" id="hairCard">
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="hairStyle">Hair Style</label>
+                  <select id="hairStyle" class="form-select" onchange="updatePreview()">
+                    <option value="">-- None --</option>
+                    <option value="long flowing hair windswept">Long flowing hair windswept</option>
+                    <option value="short cropped neat military">Short cropped neat military</option>
+                    <option value="short hair stylish">Short hair stylish</option>
+                    <option value="spiky messy styled">Spiky messy styled</option>
+                    <option value="slicked back smooth gel">Slicked back smooth gel</option>
+                    <option value="tousled bedhead natural">Tousled bedhead natural</option>
+                    <option value="undercut shaved sides long top">Undercut shaved sides long top</option>
+                    <option value="long ponytail tied back">Long ponytail tied back</option>
+                    <option value="bald clean shaved head">Bald clean shaved head</option>
+                    <option value="mohawk punk style">Mohawk punk style</option>
+                    <option value="dreadlocks long">Dreadlocks long</option>
+                    <option value="braided intricate">Braided intricate</option>
+                    <option value="wavy medium length">Wavy medium length</option>
+                    <option value="side parted professional">Side parted professional</option>
+                    <option value="man bun top knot">Man bun top knot</option>
+                    <option value="curly wild natural">Curly wild natural</option>
+                    <option value="asymmetrical artistic">Asymmetrical artistic</option>
+                    <option value="wet slicked dripping">Wet slicked dripping</option>
+                    <option value="windblown dynamic">Windblown dynamic</option>
+                    <option value="fade haircut modern">Fade haircut modern</option>
+                  </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="hairColor">Hair Color</label>
+                  <select id="hairColor" class="form-select" onchange="updatePreview()">
+                    <option value="">-- None --</option>
+                    <option value="black hair">Black hair</option>
+                    <option value="jet black raven dark">Jet black raven dark</option>
+                    <option value="deep brown chocolate">Deep brown chocolate</option>
+                    <option value="auburn red mahogany">Auburn red mahogany</option>
+                    <option value="golden blonde sun-kissed">Golden blonde sun-kissed</option>
+                    <option value="platinum blonde white">Platinum blonde white</option>
+                    <option value="silver white metallic">Silver white metallic</option>
+                    <option value="dark gray steel">Dark gray steel</option>
+                    <option value="vibrant purple amethyst">Vibrant purple amethyst</option>
+                    <option value="electric blue neon">Electric blue neon</option>
+                    <option value="bright blue highlights in hair">Bright blue highlights in hair</option>
+                    <option value="fiery red crimson">Fiery red crimson</option>
+                    <option value="mint green pastel">Mint green pastel</option>
+                    <option value="rose gold pink">Rose gold pink</option>
+                    <option value="iridescent multicolored rainbow">Iridescent multicolored rainbow</option>
+                    <option value="two-tone split dyed">Two-tone split dyed</option>
+                    <option value="highlights streaks ombre">Highlights streaks ombre</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-title"><i class="fas fa-eye"></i> Eyes & Expression</div>
+        <div class="card">
+          <div class="card-header" data-bs-toggle="collapse" data-bs-target="#eyeCard">
+            <h5>Eye Color & Details</h5>
+          </div>
+          <div class="collapse show" id="eyeCard">
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="eyeColor">Eye Color</label>
+                  <select id="eyeColor" class="form-select" onchange="updatePreview()">
+                    <option value="">-- None --</option>
+                    <option value="piercing blue ice cold">Piercing blue ice cold</option>
+                    <option value="dark brown deep chocolate">Dark brown deep chocolate</option>
+                    <option value="amber gold glowing">Amber gold glowing</option>
+                    <option value="silver gray metallic">Silver gray metallic</option>
+                    <option value="emerald green vibrant">Emerald green vibrant</option>
+                    <option value="glowing purple mystical">Glowing purple mystical</option>
+                    <option value="blood red crimson">Blood red crimson</option>
+                    <option value="all black void pitch">All black void pitch</option>
+                    <option value="heterochromia different colors">Heterochromia (different colors)</option>
+                    <option value="glowing bright luminous">Glowing bright luminous</option>
+                    <option value="turquoise cyan bright">Turquoise cyan bright</option>
+                    <option value="violet amethyst deep">Violet amethyst deep</option>
+                  </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="eyeDetail">Eye Details</label>
+                  <select id="eyeDetail" class="form-select" onchange="updatePreview()">
+                    <option value="">-- None --</option>
+                    <option value="big expressive eyes detailed">Big expressive eyes detailed</option>
+                    <option value="sharp intense gaze piercing">Sharp intense gaze piercing</option>
+                    <option value="narrow seductive bedroom eyes">Narrow seductive bedroom eyes</option>
+                    <option value="wide innocent surprised">Wide innocent surprised</option>
+                    <option value="tired heavy lidded">Tired heavy lidded</option>
+                    <option value="fierce determined battle">Fierce determined battle ready</option>
+                    <option value="gentle soft kind">Gentle soft kind</option>
+                    <option value="glowing supernatural">Glowing supernatural mystical</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-title"><i class="fas fa-palette"></i> Skin Details</div>
+        <div class="card">
+          <div class="card-header" data-bs-toggle="collapse" data-bs-target="#skinCard">
+            <h5>Skin Tone & Texture</h5>
+          </div>
+          <div class="collapse show" id="skinCard">
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="skinTone">Skin Tone</label>
+                  <select id="skinTone" class="form-select" onchange="updatePreview()">
+                    <option value="">-- None --</option>
+                    <option value="fair pale porcelain">Fair pale porcelain</option>
+                    <option value="ivory cream light">Ivory cream light</option>
+                    <option value="beige natural warm">Beige natural warm</option>
+                    <option value="olive tan mediterranean">Olive tan mediterranean</option>
+                    <option value="golden bronze sun-kissed">Golden bronze sun-kissed</option>
+                    <option value="caramel brown rich">Caramel brown rich</option>
+                    <option value="deep dark ebony">Deep dark ebony</option>
+                    <option value="mahogany deep brown">Mahogany deep brown</option>
+                    <option value="ashen gray supernatural">Ashen gray supernatural</option>
+                    <option value="luminous ethereal glowing">Luminous ethereal glowing</option>
+                    <option value="blue tinted mystical">Blue tinted mystical</option>
+                    <option value="green tinted forest spirit">Green tinted forest spirit</option>
+                    <option value="albino white pale">Albino pure white pale</option>
+                  </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="skinTexture">Skin Texture & Surface</label>
+                  <select id="skinTexture" class="form-select" onchange="updatePreview()">
+                    <option value="">-- None --</option>
+                    <option value="smooth flawless perfect skin">Smooth flawless perfect skin</option>
+                    <option value="smooth quality detailed skin">Smooth quality detailed skin</option>
+                    <option value="smooth skin polished">Smooth skin polished</option>
+                    <option value="porcelain smooth polished">Porcelain smooth polished</option>
+                    <option value="soft supple tender">Soft supple tender</option>
+                    <option value="lightly textured natural pores">Lightly textured natural pores</option>
+                    <option value="weathered rugged rough">Weathered rugged rough</option>
+                    <option value="battle scarred marked">Battle scarred marked</option>
+                    <option value="wet glistening shiny">Wet glistening shiny</option>
+                    <option value="wet skin dripping water droplets">Wet skin dripping water droplets</option>
+                    <option value="soaking wet drenched">Soaking wet completely drenched</option>
+                    <option value="rain soaked dripping">Rain soaked dripping</option>
+                    <option value="sweaty glistening moist">Sweaty glistening moist</option>
+                    <option value="oiled shiny gleaming">Oiled shiny gleaming</option>
+                    <option value="slime covered slimy">Slime covered slimy</option>
+                    <option value="wet with slime gooey">Wet with slime gooey substance</option>
+                    <option value="glowing ethereal luminous">Glowing ethereal luminous</option>
+                    <option value="divine iridescent shimmering">Divine iridescent shimmering</option>
+                    <option value="pearlescent glossy">Pearlescent glossy sheen</option>
+                    <option value="metallic shine reflective">Metallic shine reflective</option>
+                    <option value="crystalline translucent">Crystalline translucent</option>
+                    <option value="marble smooth stone-like">Marble smooth stone-like</option>
+                    <option value="tattooed covered ink">Tattooed covered ink</option>
+                    <option value="scarred deeply marked">Scarred deeply marked</option>
+                    <option value="smooth wet abs defined">Smooth wet abs defined</option>
+                    <option value="glistening muscular definition">Glistening muscular definition</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-title"><i class="fas fa-star"></i> Special Features</div>
+        <div class="card">
+          <div class="card-header" data-bs-toggle="collapse" data-bs-target="#specialCard">
+            <h5>Fantasy & Supernatural Features</h5>
+          </div>
+          <div class="collapse show" id="specialCard">
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="wings">Wings</label>
+                  <select id="wings" class="form-select" onchange="updatePreview()">
+                    <option value="">-- None --</option>
+                    <option value="angel wings white feathered">Angel wings white feathered</option>
+                    <option value="demon wings black leathery">Demon wings black leathery</option>
+                    <option value="dragon wings scaled">Dragon wings scaled</option>
+                    <option value="fairy wings translucent">Fairy wings translucent</option>
+                    <option value="bat wings dark membrane">Bat wings dark membrane</option>
+                    <option value="mechanical wings cybernetic">Mechanical wings cybernetic</option>
+                    <option value="energy wings glowing">Energy wings glowing</option>
+                    <option value="phoenix wings fire">Phoenix wings fire</option>
+                  </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="supernatural">Supernatural Elements</label>
+                  <select id="supernatural" class="form-select" multiple size="6" onchange="updatePreview()">
+                    <option value="">-- None --</option>
+                    <option value="fox ears kemonomimi">Fox ears kemonomimi</option>
+                    <option value="cat ears neko">Cat ears neko</option>
+                    <option value="wolf ears canine">Wolf ears canine</option>
+                    <option value="horns demonic">Horns demonic</option>
+                    <option value="tail animal">Tail animal</option>
+                                        <option value="many fox tails kitsune">Many fox tails kitsune</option>
+                    <option value="pointed elf ears">Pointed elf ears</option>
+                    <option value="fangs vampire">Fangs vampire</option>
+                    <option value="glowing markings runes">Glowing markings runes</option>
+                    <option value="halo divine">Halo divine</option>
+                    <option value="aura energy surrounding">Aura energy surrounding</option>
+                    <option value="floating debris magic">Floating debris magic</option>
+                  </select>
+                  <small class="text-muted">Hold Ctrl/Cmd for multiple</small>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-12 mb-3">
+                  <label for="bodyMarks">Body Marks & Features</label>
+                  <select id="bodyMarks" class="form-select" multiple size="5" onchange="updatePreview()">
+                    <option value="">-- None --</option>
+                    <option value="full body tattoos intricate">Full body tattoos intricate</option>
+                    <option value="chest tattoo tribal">Chest tattoo tribal</option>
+                    <option value="sleeve tattoos detailed">Sleeve tattoos detailed</option>
+                    <option value="body scars battle worn">Body scars battle worn</option>
+                    <option value="facial scar dramatic">Facial scar dramatic</option>
+                    <option value="moles birthmarks beauty marks">Moles birthmarks beauty marks</option>
+                    <option value="piercings ear nose">Piercings (ear, nose)</option>
+                    <option value="glowing marks mystical runes">Glowing marks mystical runes</option>
+                    <option value="cybernetic implants tech">Cybernetic implants tech</option>
+                    <option value="long nails sharp claws">Long nails sharp claws</option>
+                  </select>
+                  <small class="text-muted">Hold Ctrl/Cmd for multiple</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BODY TAB -->
+      <div class="tab-pane fade" id="bodyTab" role="tabpanel">
+        <div class="section-title"><i class="fas fa-dumbbell"></i> Torso & Physique</div>
+        <div class="card">
+          <div class="card-header" data-bs-toggle="collapse" data-bs-target="#torsoCard">
+            <h5>Body Definition & Torso State</h5>
+          </div>
+          <div class="collapse show" id="torsoCard">
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="torsoState">Torso Coverage</label>
+                  <select id="torsoState" class="form-select" onchange="updatePreview()">
+                    <option value="">-- None --</option>
+                    <option value="fully clothed upper body">Fully clothed upper body</option>
+                    <option value="shirtless bare chest exposed">Shirtless bare chest exposed</option>
+                    <option value="partially clothed shirt open">Partially clothed shirt open</option>
+                    <option value="shirt unbuttoned revealing torso">Shirt unbuttoned revealing torso</option>
+                    <option value="shirt pulled up showing abs">Shirt pulled up showing abs</option>
+                    <option value="sleeveless vest bare arms">Sleeveless vest bare arms</option>
+                    <option value="jacket open no shirt">Jacket open no shirt</option>
+                    <option value="towel wrapped around waist">Towel wrapped around waist</option>
+                  </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="muscleDef">Muscle Definition</label>
+                  <select id="muscleDef" class="form-select" onchange="updatePreview()">
+                    <option value="">-- None --</option>
+                    <option value="lean fit athletic">Lean fit athletic</option>
+                    <option value="toned defined muscles">Toned defined muscles</option>
+                    <option value="well defined six pack abs">Well-defined six pack abs</option>
+                    <option value="prominent abs eight pack">Prominent abs eight pack</option>
+                    <option value="massive bulging muscles">Massive bulging muscles</option>
+                    <option value="ripped shredded physique">Ripped shredded physique</option>
+                    <option value="bodybuilder hypermuscular">Bodybuilder hypermuscular</option>
+                    <option value="soft natural body">Soft natural body</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="chest">Chest & Pectorals</label>
+                  <select id="chest" class="form-select" onchange="updatePreview()">
+                    <option value="">-- None --</option>
+                    <option value="flat chest natural">Flat chest natural</option>
+                    <option value="normal proportional chest">Normal proportional chest</option>
+                    <option value="well developed pecs">Well developed pecs</option>
+                    <option value="massive bulging pectorals">Massive bulging pectorals</option>
+                    <option value="chiseled detailed chest">Chiseled detailed chest</option>
+                    <option value="defined pecs visible">Defined pecs clearly visible</option>
+                  </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="shouldersArms">Shoulders & Arms</label>
+                  <select id="shouldersArms" class="form-select" onchange="updatePreview()">
+                    <option value="">-- None --</option>
+                    <option value="average shoulders normal arms">Average shoulders normal arms</option>
+                    <option value="broad shoulders wide">Broad shoulders wide</option>
+                    <option value="extremely wide shoulders massive">Extremely wide shoulders massive</option>
+                    <option value="toned biceps defined">Toned biceps defined</option>
+                    <option value="bulging massive arms veiny">Bulging massive arms veiny</option>
+                    <option value="muscular arms powerful">Muscular arms powerful</option>
+                    <option value="slender elegant arms">Slender elegant arms</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-12 mb-3">
+                  <label for="absDetail">Abdominal Detail</label>
+                  <select id="absDetail" class="form-select" onchange="updatePreview()">
+                    <option value="">-- None --</option>
+                    <option value="no visible abs">No visible abs</option>
+                    <option value="slight abs outline">Slight abs outline</option>
+                    <option value="visible defined abs">Visible defined abs</option>
+                    <option value="prominent six pack abs">Prominent six pack abs</option>
+                    <option value="show abs extremely shredded">Show abs extremely shredded</option>
+                    <option value="eight pack hyperdefined">Eight pack hyperdefined</option>
+                    <option value="abs with v-line hip definition">Abs with v-line hip definition</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-title"><i class="fas fa-shirt"></i> Clothing & Attire</div>
+        <div class="card">
+          <div class="card-header" data-bs-toggle="collapse" data-bs-target="#clothCard">
+            <h5>Outfit & Accessories</h5>
+          </div>
+          <div class="collapse show" id="clothCard">
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="outfit">Main Outfit</label>
+                  <select id="outfit" class="form-select" onchange="updatePreview()">
+                    <option value="">-- None / Minimal --</option>
+                    <option value="medieval armor knight">Medieval armor knight</option>
+                    <option value="flowing robes mystical">Flowing robes mystical</option>
+                    <option value="futuristic bodysuit">Futuristic bodysuit</option>
+                    <option value="tactical military gear">Tactical military gear</option>
+                    <option value="noble elegant suit">Noble elegant suit</option>
+                    <option value="casual modern streetwear">Casual modern streetwear</option>
+                    <option value="gothic dark elegant">Gothic dark elegant</option>
+                    <option value="dark muted blue male hanfu">Dark muted blue male hanfu</option>
+                    <option value="hanfu traditional chinese">Hanfu traditional Chinese</option>
+                    <option value="kimono traditional japanese">Kimono traditional Japanese</option>
+                    <option value="leather jacket edgy">Leather jacket edgy</option>
+                    <option value="school uniform student">School uniform student</option>
+                    <option value="business suit professional">Business suit professional</option>
+                    <option value="pirate outfit swashbuckler">Pirate outfit swashbuckler</option>
+                    <option value="cyberpunk neon streetwear">Cyberpunk neon streetwear</option>
+                    <option value="traditional tribal">Traditional tribal attire</option>
+                  </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="accessories">Accessories</label>
+                  <select id="accessories" class="form-select" multiple size="6" onchange="updatePreview()">
+                    <option value="">-- None --</option>
+                    <option value="holding a fan elegant">Holding a fan elegant</option>
+                    <option value="asian accessories traditional">Asian accessories traditional</option>
+                    <option value="ornate jewelry rings necklace">Ornate jewelry rings necklace</option>
+                    <option value="sword katana weapon">Sword katana weapon</option>
+                    <option value="staff magical glowing">Staff magical glowing</option>
+                    <option value="chains decorative">Chains decorative</option>
+                    <option value="cape flowing dramatic">Cape flowing dramatic</option>
+                    <option value="crown royal headpiece">Crown royal headpiece</option>
+                    <option value="mask mysterious">Mask mysterious</option>
+                    <option value="gloves elegant">Gloves elegant</option>
+                  </select>
+                  <small class="text-muted">Hold Ctrl/Cmd for multiple</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- POSE TAB -->
+      <div class="tab-pane fade" id="poseTab" role="tabpanel">
+        <div class="section-title"><i class="fas fa-face-grin"></i> Facial Expression</div>
+        <div class="card">
+          <div class="card-header" data-bs-toggle="collapse" data-bs-target="#expressCard">
+            <h5>Expression (40+ Options)</h5>
+          </div>
+          <div class="collapse show" id="expressCard">
+            <div class="card-body">
+              <select id="expression" class="form-select" onchange="updatePreview()">
+                <option value="">-- None --</option>
+                <optgroup label="Confident & Attractive">
+                  <option value="handsome attractive charming smile">Handsome attractive charming smile</option>
+                  <option value="smoldering seductive gaze">Smoldering seductive gaze</option>
+                  <option value="confident smirk arrogant">Confident smirk arrogant</option>
+                  <option value="charismatic magnetic presence">Charismatic magnetic presence</option>
+                  <option value="alluring captivating stare">Alluring captivating stare</option>
+                  <option value="flirtatious playful wink">Flirtatious playful wink</option>
+                </optgroup>
+                <optgroup label="Intense & Dramatic">
+                  <option value="intense focused piercing gaze">Intense focused piercing gaze</option>
+                  <option value="fierce determined battle ready">Fierce determined battle ready</option>
+                  <option value="cold calculating emotionless">Cold calculating emotionless</option>
+                  <option value="menacing threatening dangerous">Menacing threatening dangerous</option>
+                  <option value="angry wrathful furious">Angry wrathful furious</option>
+                  <option value="pained suffering anguished">Pained suffering anguished</option>
+                </optgroup>
+                <optgroup label="Mysterious & Brooding">
+                  <option value="mysterious brooding enigmatic">Mysterious brooding enigmatic</option>
+                  <option value="melancholic sad sorrowful">Melancholic sad sorrowful</option>
+                  <option value="distant lost in thought">Distant lost in thought</option>
+                  <option value="troubled conflicted">Troubled conflicted inner turmoil</option>
+                  <option value="haunted dark past">Haunted by dark past</option>
+                </optgroup>
+                <optgroup label="Soft & Vulnerable">
+                  <option value="gentle soft kind smile">Gentle soft kind smile</option>
+                  <option value="vulnerable exposed emotional">Vulnerable exposed emotional</option>
+                  <option value="shy blushing embarrassed">Shy blushing embarrassed</option>
+                  <option value="innocent pure angelic">Innocent pure angelic</option>
+                  <option value="peaceful serene calm">Peaceful serene calm</option>
+                  <option value="sleepy tired drowsy">Sleepy tired drowsy</option>
+                </optgroup>
+                <optgroup label="Dynamic & Energetic">
+                  <option value="excited energetic enthusiastic">Excited energetic enthusiastic</option>
+                  <option value="surprised shocked wide-eyed">Surprised shocked wide-eyed</option>
+                  <option value="laughing joyful happy">Laughing joyful happy</option>
+                  <option value="mischievous playful teasing">Mischievous playful teasing</option>
+                  <option value="triumphant victorious proud">Triumphant victorious proud</option>
+                </optgroup>
+                <optgroup label="Serious & Regal">
+                  <option value="regal dignified noble bearing">Regal dignified noble bearing</option>
+                  <option value="serious stern authoritative">Serious stern authoritative</option>
+                  <option value="wise contemplative thoughtful">Wise contemplative thoughtful</option>
+                  <option value="stoic unyielding strong">Stoic unyielding strong</option>
+                </optgroup>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-title"><i class="fas fa-person-hiking"></i> Body Pose</div>
+        <div class="card">
+          <div class="card-header" data-bs-toggle="collapse" data-bs-target="#poseBodyCard">
+            <h5>Dynamic Poses (50+ Options)</h5>
+          </div>
+          <div class="collapse show" id="poseBodyCard">
+            <div class="card-body">
+              <select id="bodyPose" class="form-select" onchange="updatePreview()">
+                <option value="">-- None --</option>
+                <optgroup label="Standing - Basic">
+                  <option value="standing straight facing viewer">Standing straight facing viewer</option>
+                  <option value="standing relaxed casual pose">Standing relaxed casual pose</option>
+                  <option value="standing arms crossed confident">Standing arms crossed confident</option>
+                  <option value="standing hands on hips powerful">Standing hands on hips powerful</option>
+                  <option value="standing one hand in pocket">Standing one hand in pocket</option>
+                  <option value="standing leaning against wall">Standing leaning against wall</option>
+                </optgroup>
+                <optgroup label="Standing - Dynamic">
+                  <option value="dynamic pose action ready">Dynamic pose action ready</option>
+                  <option value="heroic powerful stance dramatic">Heroic powerful stance dramatic</option>
+                  <option value="elegant pose graceful refined">Elegant pose graceful refined</option>
+                  <option value="confident pose shoulders back">Confident pose shoulders back</option>
+                  <option value="contrapposto artistic weight shift">Contrapposto artistic weight shift</option>
+                </optgroup>
+                <optgroup label="Sitting & Reclining">
+                  <option value="sitting relaxed casual">Sitting relaxed casual</option>
+                  <option value="sitting legs crossed elegant">Sitting legs crossed elegant</option>
+                  <option value="sitting leaning back confident">Sitting leaning back confident</option>
+                  <option value="sitting on edge contemplative">Sitting on edge contemplative</option>
+                  <option value="reclining on side seductive">Reclining on side seductive</option>
+                  <option value="lying down relaxed">Lying down relaxed</option>
+                  <option value="kneeling upright dignified">Kneeling upright dignified</option>
+                </optgroup>
+                <optgroup label="Artistic & Sensual">
+                  <option value="looking over shoulder back view">Looking over shoulder back view</option>
+                  <option value="face in profile side view">Face in profile side view</option>
+                  <option value="three quarter view artistic">Three quarter view artistic</option>
+                  <option value="hand through hair casual">Hand through hair casual</option>
+                  <option value="hand on chest dramatic">Hand on chest dramatic</option>
+                  <option value="arms above head stretching">Arms above head stretching</option>
+                  <option value="reaching upward yearning">Reaching upward yearning</option>
+                  <option value="intimate close-up personal">Intimate close-up personal</option>
+                </optgroup>
+                <optgroup label="Action & Combat">
+                  <option value="fighting stance combat ready">Fighting stance combat ready</option>
+                  <option value="drawing weapon dynamic">Drawing weapon dynamic</option>
+                  <option value="mid-action movement blur">Mid-action movement blur</option>
+                  <option value="jumping mid-air dynamic">Jumping mid-air dynamic</option>
+                  <option value="running sprinting forward">Running sprinting forward</option>
+                  <option value="casting spell magical gesture">Casting spell magical gesture</option>
+                </optgroup>
+                <optgroup label="Vulnerable & Emotional">
+                  <option value="kneeling head down submission">Kneeling head down submission</option>
+                  <option value="collapsed exhausted defeated">Collapsed exhausted defeated</option>
+                  <option value="sitting knees to chest vulnerable">Sitting knees to chest vulnerable</option>
+                  <option value="reaching out desperately">Reaching out desperately</option>
+                  <option value="hands covering face emotional">Hands covering face emotional</option>
+                </optgroup>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-title"><i class="fas fa-camera"></i> Camera & Viewing Angle</div>
+        <div class="card">
+          <div class="card-header" data-bs-toggle="collapse" data-bs-target="#cameraCard">
+            <h5>Camera Shot & Angle</h5>
+          </div>
+          <div class="collapse show" id="cameraCard">
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="cameraShot">Camera Shot Type</label>
+                  <select id="cameraShot" class="form-select" onchange="updatePreview()">
+                    <option value="">-- None --</option>
+                                        <option value="full body shot head to toe">Full body shot (head to toe)</option>
+                    <option value="upper body shot waist up">Upper body shot (waist up)</option>
+                    <option value="cowboy shot mid-thigh up">Cowboy shot (mid-thigh up)</option>
+                    <option value="close-up shot face focus">Close-up shot (face focus)</option>
+                    <option value="extreme close-up eyes detail">Extreme close-up (eyes detail)</option>
+                    <option value="portrait shot head shoulders">Portrait shot (head & shoulders)</option>
+                    <option value="wide shot environmental context">Wide shot (environmental context)</option>
+                  </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="cameraAngle">Camera Angle</label>
+                  <select id="cameraAngle" class="form-select" onchange="updatePreview()">
+                    <option value="">-- None --</option>
+                    <option value="eye level straight on">Eye level (straight on)</option>
+                    <option value="low angle looking up heroic">Low angle (looking up heroic)</option>
+                    <option value="high angle looking down">High angle (looking down)</option>
+                    <option value="dutch angle tilted dynamic">Dutch angle (tilted dynamic)</option>
+                    <option value="from above bird's eye">From above (bird's eye)</option>
+                    <option value="from below worm's eye">From below (worm's eye)</option>
+                    <option value="over the shoulder perspective">Over the shoulder perspective</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ENVIRONMENT TAB -->
+      <div class="tab-pane fade" id="envTab" role="tabpanel">
+        <div class="section-title"><i class="fas fa-mountain"></i> Background Setting</div>
+        <div class="card">
+          <div class="card-header" data-bs-toggle="collapse" data-bs-target="#bgCard">
+            <h5>Background Environment</h5>
+          </div>
+          <div class="collapse show" id="bgCard">
+            <div class="card-body">
+              <select id="background" class="form-select" onchange="updatePreview()">
+                <option value="">-- None --</option>
+                <option value="simple background plain">Simple background plain</option>
+                <option value="white background clean">White background clean</option>
+                <option value="black background dramatic">Black background dramatic</option>
+                <option value="gradient background soft">Gradient background soft</option>
+                <option value="blurred background bokeh">Blurred background bokeh</option>
+                <option value="detailed background intricate">Detailed background intricate</option>
+                <optgroup label="Indoor Settings">
+                  <option value="bedroom intimate private">Bedroom intimate private</option>
+                  <option value="throne room royal grand">Throne room royal grand</option>
+                  <option value="library study books">Library study books</option>
+                  <option value="gothic castle interior dark">Gothic castle interior dark</option>
+                  <option value="modern apartment contemporary">Modern apartment contemporary</option>
+                  <option value="traditional japanese room tatami">Traditional Japanese room tatami</option>
+                  <option value="studio photography setup">Studio photography setup</option>
+                </optgroup>
+                <optgroup label="Outdoor Settings">
+                  <option value="ancient chinese background traditional">Ancient Chinese background traditional</option>
+                  <option value="japanese garden peaceful">Japanese garden peaceful</option>
+                  <option value="cherry blossom trees sakura">Cherry blossom trees sakura</option>
+                  <option value="mountain peak summit">Mountain peak summit</option>
+                  <option value="forest mystical enchanted">Forest mystical enchanted</option>
+                  <option value="beach ocean sunset">Beach ocean sunset</option>
+                  <option value="city street urban night">City street urban night</option>
+                  <option value="rooftop cityscape view">Rooftop cityscape view</option>
+                </optgroup>
+                <optgroup label="Fantasy & Supernatural">
+                  <option value="mystical realm ethereal">Mystical realm ethereal</option>
+                  <option value="celestial heaven clouds">Celestial heaven clouds</option>
+                  <option value="underworld hell fire">Underworld hell fire</option>
+                  <option value="dimensional void abstract">Dimensional void abstract</option>
+                  <option value="magical forest glowing">Magical forest glowing</option>
+                  <option value="ruins ancient temple">Ruins ancient temple</option>
+                </optgroup>
+                <optgroup label="Modern & Cyberpunk">
+                  <option value="cyberpunk city neon lights">Cyberpunk city neon lights</option>
+                  <option value="futuristic space station">Futuristic space station</option>
+                  <option value="holographic display background">Holographic display background</option>
+                  <option value="digital grid matrix">Digital grid matrix</option>
+                </optgroup>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-title"><i class="fas fa-lightbulb"></i> Lighting & Atmosphere</div>
+        <div class="card">
+          <div class="card-header" data-bs-toggle="collapse" data-bs-target="#lightCard">
+            <h5>Lighting Setup & Mood</h5>
+          </div>
+          <div class="collapse show" id="lightCard">
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="lighting">Lighting Type</label>
+                  <select id="lighting" class="form-select" onchange="updatePreview()">
+                    <option value="">-- None --</option>
+                    <option value="detailed lighting professional">Detailed lighting professional</option>
+                    <option value="detailed shading rendered">Detailed shading rendered</option>
+                    <option value="dramatic lighting cinematic">Dramatic lighting cinematic</option>
+                    <option value="soft lighting gentle">Soft lighting gentle</option>
+                    <option value="rim lighting backlit">Rim lighting backlit</option>
+                    <option value="studio lighting professional">Studio lighting professional</option>
+                    <option value="natural sunlight outdoor">Natural sunlight outdoor</option>
+                    <option value="golden hour warm glow">Golden hour warm glow</option>
+                    <option value="moonlight ethereal">Moonlight ethereal</option>
+                    <option value="neon lights cyberpunk">Neon lights cyberpunk</option>
+                    <option value="candlelight warm intimate">Candlelight warm intimate</option>
+                    <option value="volumetric lighting god rays">Volumetric lighting god rays</option>
+                  </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="colorPalette">Color Palette & Mood</label>
+                  <select id="colorPalette" class="form-select" onchange="updatePreview()">
+                    <option value="">-- None --</option>
+                    <option value="vibrant colors saturated">Vibrant colors saturated</option>
+                    <option value="high quality perfect colors">High quality perfect colors</option>
+                    <option value="muted colors subdued">Muted colors subdued</option>
+                    <option value="warm tones orange red">Warm tones (orange, red)</option>
+                    <option value="cool tones blue purple">Cool tones (blue, purple)</option>
+                    <option value="monochrome black white">Monochrome (black & white)</option>
+                    <option value="pastel soft colors">Pastel soft colors</option>
+                    <option value="dark moody atmosphere">Dark moody atmosphere</option>
+                    <option value="bright cheerful positive">Bright cheerful positive</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DOUJINSHI EFFECTS TAB -->
+      <div class="tab-pane fade" id="effectsTab" role="tabpanel">
+        <div class="alert alert-info">
+          <i class="fas fa-info-circle"></i> <strong>Doujinshi Style Effects:</strong> These effects are inspired by popular manga and doujinshi visual styles.
+        </div>
+
+        <div class="section-title"><i class="fas fa-wand-sparkles"></i> Visual Effects</div>
+        <div class="card">
+          <div class="card-header" data-bs-toggle="collapse" data-bs-target="#visualFxCard">
+            <h5>Manga/Doujinshi Visual Effects <span class="doujin-badge">Popular</span></h5>
+          </div>
+          <div class="collapse show" id="visualFxCard">
+            <div class="card-body">
+              <select id="visualEffects" class="form-select" multiple size="8" onchange="updatePreview()">
+                <option value="">-- None --</option>
+                <option value="motion lines speed lines">Motion lines / Speed lines</option>
+                <option value="sparkles glitter effect">Sparkles glitter effect</option>
+                <option value="flower petals floating">Flower petals floating</option>
+                <option value="cherry blossom petals">Cherry blossom petals</option>
+                <option value="dramatic lighting rays">Dramatic lighting rays</option>
+                <option value="lens flare bright">Lens flare bright</option>
+                <option value="screen tones manga style">Screen tones manga style</option>
+                <option value="soft focus dreamy">Soft focus dreamy</option>
+                <option value="bokeh background blur">Bokeh background blur</option>
+                <option value="halftone dot pattern">Halftone dot pattern</option>
+                <option value="manga panel layout">Manga panel layout</option>
+                <option value="speech bubbles text boxes">Speech bubbles text boxes</option>
+                <option value="action lines impact">Action lines impact</option>
+                <option value="steam rising hot">Steam rising (hot)</option>
+                <option value="water droplets splashing">Water droplets splashing</option>
+                <option value="sweat drops glistening">Sweat drops glistening</option>
+                <option value="blush marks cheeks">Blush marks on cheeks</option>
+                <option value="teardrop emotional">Teardrop emotional</option>
+              </select>
+              <small class="text-muted">Hold Ctrl/Cmd to select multiple effects</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-title"><i class="fas fa-heart"></i> Emotional & Atmosphere Effects</div>
+        <div class="card">
+          <div class="card-header" data-bs-toggle="collapse" data-bs-target="#emotionFxCard">
+            <h5>Doujinshi Emotional Effects</h5>
+          </div>
+          <div class="collapse show" id="emotionFxCard">
+            <div class="card-body">
+              <select id="emotionalEffects" class="form-select" multiple size="6" onchange="updatePreview()">
+                <option value="">-- None --</option>
+                <option value="romantic atmosphere pink tones">Romantic atmosphere pink tones</option>
+                <option value="sensual mood lighting">Sensual mood lighting</option>
+                <option value="intimate close atmosphere">Intimate close atmosphere</option>
+                <option value="passionate tension dramatic">Passionate tension dramatic</option>
+                <option value="soft romantic glow">Soft romantic glow</option>
+                <option value="dreamy ethereal mood">Dreamy ethereal mood</option>
+                <option value="melancholic blue tones">Melancholic blue tones</option>
+                <option value="intense dramatic shadows">Intense dramatic shadows</option>
+                <option value="warm affectionate lighting">Warm affectionate lighting</option>
+                <option value="flower boy aesthetic">Flower boy aesthetic</option>
+              </select>
+              <small class="text-muted">Hold Ctrl/Cmd to select multiple</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-title"><i class="fas fa-pen-nib"></i> Art Style Enhancements</div>
+        <div class="card">
+          <div class="card-header" data-bs-toggle="collapse" data-bs-target="#styleFxCard">
+            <h5>Doujinshi Art Style Details</h5>
+          </div>
+          <div class="collapse show" id="styleFxCard">
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="lineArt">Line Art Style</label>
+                  <select id="lineArt" class="form-select" onchange="updatePreview()">
+                    <option value="">-- None --</option>
+                    <option value="clean lineart smooth">Clean lineart smooth</option>
+                    <option value="detailed linework intricate">Detailed linework intricate</option>
+                    <option value="thick bold lines">Thick bold lines</option>
+                    <option value="thin delicate lines">Thin delicate lines</option>
+                    <option value="sketchy loose lines">Sketchy loose lines</option>
+                    <option value="varied line weight dynamic">Varied line weight dynamic</option>
+                  </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="shadingStyle">Shading Style</label>
+                  <select id="shadingStyle" class="form-select" onchange="updatePreview()">
+                    <option value="">-- None --</option>
+                    <option value="cel shading flat">Cel shading flat</option>
+                    <option value="soft shading gradient">Soft shading gradient</option>
+                    <option value="hard shadows dramatic">Hard shadows dramatic</option>
+                    <option value="detailed shading realistic">Detailed shading realistic</option>
+                    <option value="visible shading strokes">Visible shading strokes</option>
+                    <option value="painting shading artistic">Painting shading artistic</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- QUALITY TAB -->
+      <div class="tab-pane fade" id="qualityTab" role="tabpanel">
+        <div class="section-title"><i class="fas fa-sparkles"></i> Quality Modifiers</div>
+        <div class="card">
+          <div class="card-header">
+            <h5>Quality Enhancement Tags (Click to Toggle)</h5>
+          </div>
+          <div class="card-body">
+            <p class="text-muted small mb-3">Select quality tags to enhance your prompt. These will be added at the beginning of your final output.</p>
+            <div class="quality-tags" id="qualityTagsContainer">
+              <!-- Generated by JavaScript -->
+            </div>
+          </div>
+        </div>
+
+        <div class="section-title"><i class="fas fa-brush"></i> Art Style</div>
+        <div class="card">
+          <div class="card-header" data-bs-toggle="collapse" data-bs-target="#styleCard">
+            <h5>Artistic Style & Rendering</h5>
+          </div>
+          <div class="collapse show" id="styleCard">
+            <div class="card-body">
+              <select id="artStyle" class="form-select mb-3" onchange="updatePreview()">
+                <option value="">-- None --</option>
+                <option value="anime style detailed">Anime style detailed</option>
+                <option value="drawn on style sketched visible strokes">Drawn on style, sketched, visible strokes</option>
+                <option value="semi-realistic art style">Semi-realistic art style</option>
+                <option value="realistic detailed rendering">Realistic detailed rendering</option>
+                <option value="painting style oil acrylic">Painting style (oil, acrylic)</option>
+                <option value="watercolor style soft">Watercolor style soft</option>
+                <option value="manga style black white">Manga style (black & white)</option>
+                <option value="digital art clean polished">Digital art clean polished</option>
+                <option value="concept art professional">Concept art professional</option>
+                <option value="illustration style artistic">Illustration style artistic</option>
+                <option value="nijigenn style anime aesthetic">Nijigenn style anime aesthetic</option>
+                <option value="flower boy style bishonen">Flower boy style bishonen</option>
+                <option value="korean manhwa style webtoon">Korean manhwa style webtoon</option>
+                <option value="chinese manhua style detailed">Chinese manhua style detailed</option>
+              </select>
+
+              <label for="renderQuality">Rendering Quality</label>
+              <select id="renderQuality" class="form-select" onchange="updatePreview()">
+                <option value="">-- None --</option>
+                <option value="detailed painting layered">Detailed painting layered</option>
+                <option value="visible shading strokes textured">Visible shading strokes textured</option>
+                <option value="paint style acrylic oil">Paint style (acrylic/oil)</option>
+                <option value="smooth polished finish">Smooth polished finish</option>
+                <option value="detailed coloring rich">Detailed coloring rich</option>
+                <option value="detailed style intricate">Detailed style intricate</option>
+                <option value="painting shading artistic">Painting shading artistic</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header" data-bs-toggle="collapse" data-bs-target="#customCard">
+            <h5>Custom Enhancements (Optional)</h5>
+          </div>
+          <div class="collapse show" id="customCard">
+            <div class="card-body">
+              <label for="customTags">Additional Custom Tags</label>
+              <textarea id="customTags" class="form-control" rows="3" placeholder="Add any additional custom tags or modifiers here (comma-separated)"></textarea>
+              <small class="text-muted">Example: dramatic shadows, ethereal glow, fantasy elements</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Control Buttons -->
+    <div class="btn-group-custom">
+      <button class="btn btn-primary btn-lg" onclick="generatePrompt()">
+        <i class="fas fa-sparkles"></i> Generate Prompt
+      </button>
+      <button class="btn btn-outline-secondary" onclick="randomize()">
+        <i class="fas fa-dice"></i> Randomize All
+      </button>
+      <button class="btn btn-outline-secondary" onclick="copyPrompt()">
+        <i class="fas fa-copy"></i> Copy to Clipboard
+      </button>
+      <button class="btn btn-outline-secondary" onclick="downloadPrompt()">
+        <i class="fas fa-download"></i> Download TXT
+      </button>
+      <button class="btn btn-success" onclick="generateAltText()">
+        <i class="fas fa-image"></i> Generate Alt Text
+      </button>
+      <button class="btn btn-doujin" onclick="togglePreview()">
+        <i class="fas fa-eye"></i> Toggle Preview
+      </button>
+    </div>
+
+    <!-- Loading Animation -->
+    <div class="loading" id="loadingAnimation">
+      <div class="spinner"></div>
+      <p class="mt-2">Generating your prompt...</p>
+    </div>
+
+    <!-- Output Area -->
+    <pre id="output" class="p-4 border rounded mb-3"></pre>
+    
+    <!-- Alt Text Output -->
+    <div id="altTextOutput" style="display:none;" class="alert alert-info">
+      <h5><i class="fas fa-image"></i> SEO Image Alt Text:</h5>
+      <p id="altTextContent" style="font-family: 'Segoe UI'; font-size: 0.95rem;"></p>
+            <button class="btn btn-sm btn-primary" onclick="copyAltText()">
+        <i class="fas fa-copy"></i> Copy Alt Text
+      </button>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats">
+      <p class="mb-0">✨ Prompts generated: <strong><span id="promptCount">0</span></strong> | Characters created: <strong><span id="charCount">0</span></strong></p>
+    </div>
+  </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  'use strict'; // Enable strict mode for better error catching
+
+  // ==================== CONFIGURATION ====================
+  
+  // Quality Enhancement Tags
+  const qualityTags = [
+    'masterpiece',
+    'best quality',
+    'very aesthetic',
+    'absurdres',
+    'smooth quality',
+    'perfect quality',
+    'newest',
+    'very awe-inspiring',
+    'high detail',
+    'detailed background',
+    'detailed features',
+    'detailed shading',
+    'detailed lighting',
+    'intricate details',
+    'perfect proportions',
+    'attractive features',
+    'beautiful face',
+    'realistic facial features',
+    'semi-realistic features',
+    'somewhat realistic appearance',
+    '4k resolution',
+    'ultra quality',
+    'professional artwork'
+  ];
+
+  // ==================== PRESET CONFIGURATIONS ====================
+  
+  const presets = {
+    doujin_bishonen: {
+      characterArchetype: '1boy solo male focus noble warrior prince regal bearing',
+      ageGroup: 'young adult 20-25',
+      bodyFrame: 'tall slender graceful',
+      faceType: 'ethereal beautiful androgynous',
+      facialHair: 'clean shaved smooth',
+      hairStyle: 'long flowing hair windswept',
+      hairColor: 'silver white metallic',
+      eyeColor: 'glowing purple mystical',
+      eyeDetail: 'big expressive eyes detailed',
+      skinTone: 'fair pale porcelain',
+      skinTexture: 'smooth flawless perfect skin',
+      torsoState: 'partially clothed shirt open',
+      muscleDef: 'lean fit athletic',
+      absDetail: 'visible defined abs',
+      outfit: 'flowing robes mystical',
+      expression: 'handsome attractive charming smile',
+      bodyPose: 'elegant pose graceful refined',
+      background: 'ancient chinese background traditional',
+      lighting: 'soft lighting gentle',
+      artStyle: 'flower boy style bishonen',
+      visualEffects: ['flower petals floating', 'soft focus dreamy'],
+      emotionalEffects: ['romantic atmosphere pink tones', 'flower boy aesthetic']
+    },
+    doujin_muscular: {
+      characterArchetype: '1boy solo male focus demon slayer battle hardened',
+      ageGroup: 'mature adult 30-40',
+      bodyFrame: 'muscular powerful built',
+      faceType: 'chiseled angular jawline sharp',
+      facialHair: 'light stubble',
+      hairStyle: 'short cropped neat military',
+      hairColor: 'jet black raven dark',
+      eyeColor: 'piercing blue ice cold',
+      skinTone: 'golden bronze sun-kissed',
+      skinTexture: 'wet glistening shiny',
+      torsoState: 'shirtless bare chest exposed',
+      muscleDef: 'ripped shredded physique',
+      chest: 'chiseled detailed chest',
+      shouldersArms: 'bulging massive arms veiny',
+      absDetail: 'show abs extremely shredded',
+      expression: 'intense focused piercing gaze',
+      bodyPose: 'standing arms crossed confident',
+      background: 'simple background plain',
+      lighting: 'dramatic lighting cinematic',
+      artStyle: 'semi-realistic art style'
+    },
+    doujin_supernatural: {
+      characterArchetype: '1boy solo male focus mystical sorcerer dark magic',
+      ageGroup: 'young adult 20-25',
+      bodyFrame: 'lithe agile nimble',
+      hairStyle: 'long flowing hair windswept',
+      hairColor: 'bright blue highlights in hair',
+      eyeColor: 'glowing purple mystical',
+      skinTexture: 'divine iridescent shimmering',
+      wings: 'demon wings black leathery',
+      supernatural: ['fox ears kemonomimi', 'many fox tails kitsune'],
+      bodyMarks: ['glowing marks mystical runes'],
+      outfit: 'dark muted blue male hanfu',
+      accessories: ['holding a fan elegant', 'asian accessories traditional'],
+      expression: 'mysterious brooding enigmatic',
+      bodyPose: 'elegant pose graceful refined',
+      background: 'ancient chinese background traditional',
+      lighting: 'moonlight ethereal',
+      colorPalette: 'vibrant colors saturated',
+      artStyle: 'nijigenn style anime aesthetic',
+      visualEffects: ['sparkles glitter effect', 'dramatic lighting rays']
+    },
+    doujin_wet: {
+      characterArchetype: '1boy solo male focus space commander intergalactic',
+      ageGroup: 'young adult 20-25',
+      bodyFrame: 'lean athletic toned',
+      faceType: 'sharp defined features striking',
+      hairStyle: 'wet slicked dripping',
+      hairColor: 'jet black raven dark',
+      skinTone: 'olive tan mediterranean',
+      skinTexture: 'soaking wet drenched',
+      torsoState: 'shirtless bare chest exposed',
+      muscleDef: 'well defined six pack abs',
+      absDetail: 'smooth wet abs defined',
+      expression: 'smoldering seductive gaze',
+      bodyPose: 'reclining on side seductive',
+      background: 'beach ocean sunset',
+      lighting: 'golden hour warm glow',
+      artStyle: 'semi-realistic art style',
+      visualEffects: ['water droplets splashing', 'sweat drops glistening'],
+      emotionalEffects: ['sensual mood lighting']
+    },
+    cyberpunk_hacker: {
+      characterArchetype: '1boy solo male focus cyberpunk hacker tech implants',
+      ageGroup: 'young adult 20-25',
+      bodyFrame: 'lean athletic toned',
+      hairStyle: 'undercut shaved sides long top',
+      hairColor: 'electric blue neon',
+      eyeColor: 'glowing bright luminous',
+      skinTexture: 'smooth flawless perfect skin',
+      bodyMarks: ['cybernetic implants tech'],
+      torsoState: 'jacket open no shirt',
+      outfit: 'cyberpunk neon streetwear',
+      expression: 'confident smirk arrogant',
+      bodyPose: 'standing leaning against wall',
+      background: 'cyberpunk city neon lights',
+      lighting: 'neon lights cyberpunk',
+      colorPalette: 'vibrant colors saturated',
+      artStyle: 'digital art clean polished',
+      visualEffects: ['motion lines speed lines']
+    },
+    vampire_lord: {
+      characterArchetype: '1boy solo male focus ancient vampire immortal elegant',
+      ageGroup: 'ageless timeless immortal',
+      bodyFrame: 'tall slender graceful',
+      faceType: 'ethereal beautiful androgynous',
+      hairStyle: 'long flowing hair windswept',
+      hairColor: 'silver white metallic',
+      eyeColor: 'blood red crimson',
+      skinTone: 'fair pale porcelain',
+      supernatural: ['fangs vampire'],
+      outfit: 'gothic dark elegant',
+      accessories: ['cape flowing dramatic'],
+      expression: 'cold calculating emotionless',
+      bodyPose: 'standing straight facing viewer',
+      background: 'gothic castle interior dark',
+      lighting: 'moonlight ethereal',
+      colorPalette: 'dark moody atmosphere',
+      artStyle: 'semi-realistic art style',
+      emotionalEffects: ['intense dramatic shadows']
+    }
+  };
+
+  // ==================== STATE MANAGEMENT ====================
+  
+  let promptCount = parseInt(localStorage.getItem('promptCount')) || 0;
+  let charCount = parseInt(localStorage.getItem('charCount')) || 0;
+  let selectedQualityTags = new Set([
+    'masterpiece',
+    'best quality',
+    'very aesthetic',
+    'absurdres',
+    'smooth quality',
+    'detailed shading',
+    'detailed lighting',
+    'semi-realistic features',
+    'attractive features',
+    'detailed features',
+    'perfect proportions'
+  ]);
+
+  // ==================== UTILITY FUNCTIONS ====================
+  
+  /**
+   * Safely get element by ID with error handling
+   */
+  function getElement(id) {
+    const element = document.getElementById(id);
+    if (!element) {
+      console.warn(`Element with id "${id}" not found`);
+    }
+    return element;
+  }
+
+  /**
+   * Get select element value safely
+   */
+  function getSelectValue(id) {
+    const element = getElement(id);
+    return element && element.value ? element.value : '';
+  }
+
+  /**
+   * Get multi-select values safely
+   */
+  function getMultiSelectValues(id) {
+    const element = getElement(id);
+    if (!element || !element.multiple) return [];
+    
+    const selected = Array.from(element.selectedOptions)
+      .map(opt => opt.value)
+      .filter(val => val !== '');
+    return selected;
+  }
+
+  /**
+   * Sanitize user input to prevent XSS
+   */
+  function sanitizeInput(input) {
+    if (typeof input !== 'string') return '';
+    return input
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#x27;')
+      .replace(/\//g, '&#x2F;')
+      .trim();
+  }
+
+  /**
+   * Show notification message
+   */
+  function showNotification(message, type = 'success') {
+    const notification = document.createElement('div');
+    notification.className = `alert alert-${type} position-fixed top-0 start-50 translate-middle-x mt-3`;
+    notification.style.zIndex = '9999';
+    notification.style.minWidth = '300px';
+    notification.style.textAlign = 'center';
+    notification.innerHTML = `<i class="fas fa-${type === 'success' ? 'check' : 'exclamation'}-circle"></i> ${message}`;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+      notification.style.opacity = '0';
+      notification.style.transition = 'opacity 0.3s';
+      setTimeout(() => notification.remove(), 300);
+    }, 2500);
+  }
+
+  /**
+   * Set select element value safely
+   */
+  function setSelectValue(id, value) {
+    const element = getElement(id);
+    if (!element) return false;
+    
+    // Check if value exists in options
+    const optionExists = Array.from(element.options).some(opt => opt.value === value);
+    if (optionExists) {
+      element.value = value;
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Set multi-select values safely
+   */
+  function setMultiSelectValues(id, values) {
+    const element = getElement(id);
+    if (!element || !element.multiple || !Array.isArray(values)) return false;
+    
+    // Clear all selections first
+    Array.from(element.options).forEach(opt => opt.selected = false);
+    
+    // Select matching options
+    values.forEach(value => {
+      const option = Array.from(element.options).find(opt => opt.value === value);
+      if (option) option.selected = true;
+    });
+    
+    return true;
+  }
+
+  // ==================== QUALITY TAGS ====================
+  
+  /**
+   * Initialize quality tag badges
+   */
+  function initQualityTags() {
+    const container = getElement('qualityTagsContainer');
+    if (!container) return;
+    
+    container.innerHTML = qualityTags.map(tag => {
+      const isActive = selectedQualityTags.has(tag) ? 'active' : '';
+      const tagId = 'tag-' + tag.replace(/\s+/g, '-');
+      return `<div class="quality-badge ${isActive}" onclick="toggleQualityTag('${tag}')" id="${tagId}">${tag}</div>`;
+    }).join('');
+  }
+
+  /**
+   * Toggle quality tag selection
+   */
+  function toggleQualityTag(tag) {
+    const tagId = 'tag-' + tag.replace(/\s+/g, '-');
+    const element = getElement(tagId);
+    if (!element) return;
+    
+    if (selectedQualityTags.has(tag)) {
+      selectedQualityTags.delete(tag);
+      element.classList.remove('active');
+    } else {
+      selectedQualityTags.add(tag);
+      element.classList.add('active');
+    }
+  }
+
+  // ==================== PREVIEW MANAGEMENT ====================
+  
+  /**
+   * Update live character preview
+   */
+  function updatePreview() {
+    const preview = getElement('previewCard');
+    if (!preview || preview.style.display === 'none') return;
+
+    try {
+      // Update archetype
+      const archElement = getElement('prevArch');
+      if (archElement) {
+        archElement.textContent = getSelectValue('characterArchetype') || '-';
+      }
+
+      // Update hair
+      const hairElement = getElement('prevHair');
+      if (hairElement) {
+        const hairStyle = getSelectValue('hairStyle');
+        const hairColor = getSelectValue('hairColor');
+        hairElement.textContent = hairStyle && hairColor 
+          ? `${hairColor}, ${hairStyle}` 
+          : (hairStyle || hairColor || '-');
+      }
+
+      // Update eyes
+      const eyesElement = getElement('prevEyes');
+      if (eyesElement) {
+        eyesElement.textContent = getSelectValue('eyeColor') || '-';
+      }
+
+      // Update skin
+      const skinElement = getElement('prevSkin');
+      if (skinElement) {
+        const skinTone = getSelectValue('skinTone');
+        const skinTexture = getSelectValue('skinTexture');
+        skinElement.textContent = skinTone && skinTexture 
+          ? `${skinTone}, ${skinTexture}` 
+          : (skinTone || skinTexture || '-');
+      }
+
+      // Update body
+      const bodyElement = getElement('prevBody');
+      if (bodyElement) {
+        const bodyFrame = getSelectValue('bodyFrame');
+        const muscleDef = getSelectValue('muscleDef');
+        bodyElement.textContent = bodyFrame && muscleDef 
+          ? `${bodyFrame}, ${muscleDef}` 
+          : (bodyFrame || muscleDef || '-');
+      }
+
+      // Update pose
+      const poseElement = getElement('prevPose');
+      if (poseElement) {
+        poseElement.textContent = getSelectValue('bodyPose') || '-';
+      }
+
+      // Update special features
+      const specialElement = getElement('prevSpecial');
+      if (specialElement) {
+        const wings = getSelectValue('wings');
+        const supernatural = getMultiSelectValues('supernatural');
+        const special = [wings, ...supernatural].filter(Boolean).join(', ');
+        specialElement.textContent = special || '-';
+      }
+    } catch (error) {
+      console.error('Error updating preview:', error);
+    }
+  }
+
+  /**
+   * Toggle preview visibility
+   */
+  function togglePreview() {
+    const preview = getElement('previewCard');
+    if (!preview) return;
+    
+    if (preview.style.display === 'none') {
+      preview.style.display = 'block';
+      updatePreview();
+      showNotification('Preview enabled', 'info');
+    } else {
+      preview.style.display = 'none';
+      showNotification('Preview hidden', 'info');
+    }
+  }
+
+  // ==================== PRESET MANAGEMENT ====================
+  
+  /**
+   * Load a preset configuration
+   */
+  function loadPreset(presetName) {
+    const preset = presets[presetName];
+    if (!preset) {
+      showNotification('Preset not found!', 'danger');
+      return;
+    }
+
+    // Show loading animation
+    const loading = getElement('loadingAnimation');
+    if (loading) loading.classList.add('active');
+
+    setTimeout(() => {
+      try {
+        // Load all values from preset
+        Object.keys(preset).forEach(key => {
+          const value = preset[key];
+          
+          if (Array.isArray(value)) {
+            // Handle multi-select
+            setMultiSelectValues(key, value);
+          } else {
+            // Handle regular select
+            setSelectValue(key, value);
+          }
+        });
+
+        updatePreview();
+        generatePrompt();
+        
+        if (loading) loading.classList.remove('active');
+        
+        const presetDisplayName = presetName.replace(/_/g, ' ').toUpperCase();
+        showNotification(`✓ Preset "${presetDisplayName}" loaded!`, 'success');
+      } catch (error) {
+        console.error('Error loading preset:', error);
+        if (loading) loading.classList.remove('active');
+        showNotification('Error loading preset', 'danger');
+      }
+    }, 500);
+  }
+
+  // ==================== PROMPT GENERATION ====================
+  
+  /**
+   * Main prompt generation function
+   */
+  function generatePrompt() {
+    try {
+      // Get all values
+      const values = {
+        // Character
+        charArch: getSelectValue('characterArchetype'),
+        ageGroup: getSelectValue('ageGroup'),
+        bodyFrame: getSelectValue('bodyFrame'),
+        
+        // Face
+        faceType: getSelectValue('faceType'),
+        facialHair: getSelectValue('facialHair'),
+        hairStyle: getSelectValue('hairStyle'),
+        hairColor: getSelectValue('hairColor'),
+        eyeColor: getSelectValue('eyeColor'),
+        eyeDetail: getSelectValue('eyeDetail'),
+        
+        // Skin
+                skinTone: getSelectValue('skinTone'),
+        skinTexture: getSelectValue('skinTexture'),
+        
+        // Special features
+        wings: getSelectValue('wings'),
+        supernatural: getMultiSelectValues('supernatural'),
+        bodyMarks: getMultiSelectValues('bodyMarks'),
+        
+        // Body
+        torsoState: getSelectValue('torsoState'),
+        muscleDef: getSelectValue('muscleDef'),
+        chest: getSelectValue('chest'),
+        shouldersArms: getSelectValue('shouldersArms'),
+        absDetail: getSelectValue('absDetail'),
+        
+        // Clothing
+        outfit: getSelectValue('outfit'),
+        accessories: getMultiSelectValues('accessories'),
+        
+        // Pose & Expression
+        expression: getSelectValue('expression'),
+        bodyPose: getSelectValue('bodyPose'),
+        cameraShot: getSelectValue('cameraShot'),
+        cameraAngle: getSelectValue('cameraAngle'),
+        
+        // Environment
+        background: getSelectValue('background'),
+        lighting: getSelectValue('lighting'),
+        colorPalette: getSelectValue('colorPalette'),
+        
+        // Effects
+        visualEffects: getMultiSelectValues('visualEffects'),
+        emotionalEffects: getMultiSelectValues('emotionalEffects'),
+        lineArt: getSelectValue('lineArt'),
+        shadingStyle: getSelectValue('shadingStyle'),
+        
+        // Style
+        artStyle: getSelectValue('artStyle'),
+        renderQuality: getSelectValue('renderQuality'),
+        customTags: sanitizeInput(getElement('customTags')?.value || '')
+      };
+
+      // Build prompt parts array
+      const parts = [];
+
+      // 1. Quality tags first
+      if (selectedQualityTags.size > 0) {
+        parts.push(Array.from(selectedQualityTags).join(', '));
+      }
+
+      // 2. Art style and rendering
+      const styleParts = [
+        values.artStyle,
+        values.renderQuality,
+        values.lineArt,
+        values.shadingStyle
+      ].filter(Boolean);
+      
+      if (styleParts.length > 0) {
+        parts.push(styleParts.join(', '));
+      }
+
+      // 3. Pose and camera
+      const poseParts = [
+        values.bodyPose,
+        values.cameraShot,
+        values.cameraAngle
+      ].filter(Boolean);
+      
+      if (poseParts.length > 0) {
+        parts.push(poseParts.join(', '));
+      }
+
+      // 4. Character base
+      if (values.charArch) parts.push(values.charArch);
+      if (values.ageGroup) parts.push(values.ageGroup);
+      if (values.bodyFrame) parts.push(values.bodyFrame);
+
+      // 5. Face details
+      const faceParts = [
+        'handsome',
+        'male',
+        'realistic',
+        'beautiful face',
+        'realistic facial features',
+        'male body',
+        values.faceType,
+        values.facialHair,
+        values.eyeDetail
+      ].filter(Boolean);
+      
+      if (faceParts.length > 0) {
+        parts.push(faceParts.join(', '));
+      }
+
+      // 6. Expression
+      if (values.expression) {
+        parts.push(values.expression);
+      }
+
+      // 7. Hair
+      const hairParts = [values.hairStyle, values.hairColor].filter(Boolean);
+      if (hairParts.length > 0) {
+        parts.push(hairParts.join(', '));
+      }
+
+      // 8. Eyes
+      if (values.eyeColor) {
+        parts.push(values.eyeColor);
+      }
+
+      // 9. Skin
+      const skinParts = [values.skinTone, values.skinTexture].filter(Boolean);
+      if (skinParts.length > 0) {
+        parts.push(skinParts.join(', '));
+      }
+
+      // 10. Body definition
+      const bodyParts = [
+        values.torsoState,
+        values.muscleDef,
+        values.absDetail,
+        values.chest,
+        values.shouldersArms
+      ].filter(Boolean);
+      
+      if (bodyParts.length > 0) {
+        parts.push(bodyParts.join(', '));
+      }
+
+      // 11. Special features
+      if (values.wings) parts.push(values.wings);
+      
+      if (values.supernatural.length > 0) {
+        parts.push(values.supernatural.join(', '));
+      }
+      
+      if (values.bodyMarks.length > 0) {
+        parts.push(values.bodyMarks.join(', '));
+      }
+
+      // 12. Clothing and accessories
+      if (values.outfit) parts.push(values.outfit);
+      
+      if (values.accessories.length > 0) {
+        parts.push(values.accessories.join(', '));
+      }
+
+      // 13. Background and lighting
+      const envParts = [
+        values.background,
+        values.lighting,
+        values.colorPalette
+      ].filter(Boolean);
+      
+      if (envParts.length > 0) {
+        parts.push(envParts.join(', '));
+      }
+
+      // 14. Visual and emotional effects
+      if (values.visualEffects.length > 0) {
+        parts.push(values.visualEffects.join(', '));
+      }
+      
+      if (values.emotionalEffects.length > 0) {
+        parts.push(values.emotionalEffects.join(', '));
+      }
+
+      // 15. Custom tags (sanitized)
+      if (values.customTags) {
+        parts.push(values.customTags);
+      }
+
+      // Validate we have content
+      if (parts.length === 0) {
+        showNotification('Please select at least one option to generate a prompt', 'warning');
+        return;
+      }
+
+      // Build final prompt
+      const finalPrompt = parts.filter(Boolean).join(', ');
+
+      // Display output
+      const outputElement = getElement('output');
+      if (outputElement) {
+        outputElement.style.display = 'block';
+        outputElement.textContent = '[' + finalPrompt + ']';
+        
+        // Scroll to output
+        outputElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+
+      // Update stats
+      promptCount++;
+      charCount++;
+      localStorage.setItem('promptCount', promptCount);
+      localStorage.setItem('charCount', charCount);
+      
+      const promptCountElement = getElement('promptCount');
+      const charCountElement = getElement('charCount');
+      
+      if (promptCountElement) promptCountElement.textContent = promptCount;
+      if (charCountElement) charCountElement.textContent = charCount;
+
+      // Update preview
+      updatePreview();
+
+      // Show success notification
+      showNotification('✓ Prompt generated successfully!', 'success');
+
+    } catch (error) {
+      console.error('Error generating prompt:', error);
+      showNotification('Error generating prompt: ' + error.message, 'danger');
+    }
+  }
+
+  // ==================== ALT TEXT GENERATION ====================
+  
+  /**
+   * Generate SEO-friendly alt text
+   */
+  function generateAltText() {
+    const outputElement = getElement('output');
+    if (!outputElement || !outputElement.textContent) {
+      showNotification('Please generate a prompt first!', 'warning');
+      return;
+    }
+
+    try {
+      // Extract key elements
+      const charArch = getSelectValue('characterArchetype') || 'male character';
+      const hairColor = getSelectValue('hairColor') || 'dark';
+      const hairStyle = getSelectValue('hairStyle') || 'styled';
+      const outfit = getSelectValue('outfit') || 'outfit';
+      const bodyPose = getSelectValue('bodyPose') || 'pose';
+      const background = getSelectValue('background') || 'background';
+      const expression = getSelectValue('expression') || 'expression';
+      const artStyle = getSelectValue('artStyle') || 'art style';
+      const muscleDef = getSelectValue('muscleDef') || 'physique';
+      const supernatural = getMultiSelectValues('supernatural');
+      
+      // Build alt text parts
+      const altTextParts = [];
+      
+      // Main description
+      const cleanedArch = charArch.replace(/1boy|solo|male focus/gi, '').trim();
+      altTextParts.push(`Professional ${artStyle} illustration of ${cleanedArch || 'male character'}`);
+
+      // Physical description
+      const physicalDesc = [];
+      if (hairColor && hairStyle) {
+        physicalDesc.push(`${hairColor} ${hairStyle}`);
+      }
+      if (muscleDef) {
+        physicalDesc.push(muscleDef);
+      }
+      
+      if (physicalDesc.length > 0) {
+        altTextParts.push(`with ${physicalDesc.join(', ')}`);
+      }
+
+      // Supernatural features
+      if (supernatural.length > 0) {
+        altTextParts.push(`featuring ${supernatural.join(', ')}`);
+      }
+
+      // Outfit
+      if (outfit) {
+        altTextParts.push(`wearing ${outfit}`);
+      }
+
+      // Pose and expression
+      if (bodyPose) {
+        altTextParts.push(`in ${bodyPose}`);
+      }
+      
+      if (expression) {
+        altTextParts.push(`with ${expression}`);
+      }
+
+      // Environment
+      if (background) {
+        altTextParts.push(`set against ${background}`);
+      }
+
+      // Quality descriptors
+      altTextParts.push('High quality digital artwork with detailed shading, professional lighting, and perfect proportions');
+      altTextParts.push('Ideal for character design, concept art, visual novel, manga, doujinshi, and anime-style illustration projects');
+
+      const altText = altTextParts.join(', ') + '.';
+
+      // Display alt text
+      const altTextContent = getElement('altTextContent');
+      const altTextOutput = getElement('altTextOutput');
+      
+      if (altTextContent && altTextOutput) {
+        altTextContent.textContent = altText;
+        altTextOutput.style.display = 'block';
+        altTextOutput.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        showNotification('✓ Alt text generated!', 'success');
+      }
+
+    } catch (error) {
+      console.error('Error generating alt text:', error);
+      showNotification('Error generating alt text', 'danger');
+    }
+  }
+
+  // ==================== COPY & DOWNLOAD ====================
+  
+  /**
+   * Copy prompt to clipboard
+   */
+  function copyPrompt() {
+    const outputElement = getElement('output');
+    if (!outputElement || !outputElement.textContent) {
+      showNotification('Generate a prompt first!', 'warning');
+      return;
+    }
+
+    const text = outputElement.textContent;
+    
+    navigator.clipboard.writeText(text).then(() => {
+      showNotification('✓ Prompt copied to clipboard!', 'success');
+    }).catch(err => {
+      console.error('Copy failed:', err);
+      
+      // Fallback method
+      const textArea = document.createElement('textarea');
+      textArea.value = text;
+      textArea.style.position = 'fixed';
+      textArea.style.left = '-999999px';
+      document.body.appendChild(textArea);
+      textArea.select();
+      
+      try {
+        document.execCommand('copy');
+        showNotification('✓ Prompt copied to clipboard!', 'success');
+      } catch (err2) {
+        showNotification('Failed to copy. Please copy manually.', 'danger');
+      }
+      
+      document.body.removeChild(textArea);
+    });
+  }
+
+  /**
+   * Copy alt text to clipboard
+   */
+  function copyAltText() {
+    const altTextContent = getElement('altTextContent');
+    if (!altTextContent || !altTextContent.textContent) {
+      showNotification('Generate alt text first!', 'warning');
+      return;
+    }
+
+    const text = altTextContent.textContent;
+    
+    navigator.clipboard.writeText(text).then(() => {
+      showNotification('✓ Alt text copied!', 'success');
+    }).catch(err => {
+      console.error('Copy failed:', err);
+      showNotification('Failed to copy alt text', 'danger');
+    });
+  }
+
+  /**
+   * Download prompt as text file
+   */
+  function downloadPrompt() {
+    const outputElement = getElement('output');
+    if (!outputElement || !outputElement.textContent) {
+      showNotification('Generate a prompt first!', 'warning');
+      return;
+    }
+
+    try {
+      const text = outputElement.textContent;
+      const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      
+      a.href = url;
+      a.download = `character_prompt_${Date.now()}.txt`;
+      a.style.display = 'none';
+      
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      
+      URL.revokeObjectURL(url);
+      
+      showNotification('✓ Prompt downloaded!', 'success');
+    } catch (error) {
+      console.error('Download failed:', error);
+      showNotification('Failed to download prompt', 'danger');
+    }
+  }
+
+  // ==================== RANDOMIZATION ====================
+  
+  /**
+   * Randomize all selections
+   */
+  function randomize() {
+    // Show loading
+    const loading = getElement('loadingAnimation');
+    if (loading) loading.classList.add('active');
+
+    setTimeout(() => {
+      try {
+        // Randomize single-select dropdowns
+        const selects = document.querySelectorAll('select:not([multiple])');
+        selects.forEach(select => {
+          if (select.options.length > 1) {
+            // Skip first option (None) 50% of the time for variety
+            const startIndex = Math.random() > 0.5 ? 0 : 1;
+            const availableOptions = select.options.length - startIndex;
+            const randomIndex = Math.floor(Math.random() * availableOptions) + startIndex;
+            select.selectedIndex = randomIndex;
+          }
+        });
+
+        // Randomize multi-selects (select 1-3 random options)
+        const multiSelects = document.querySelectorAll('select[multiple]');
+        multiSelects.forEach(select => {
+          // Clear all
+          Array.from(select.options).forEach(opt => opt.selected = false);
+          
+          // Get valid options (exclude empty values)
+          const validOptions = Array.from(select.options).filter(opt => opt.value !== '');
+          
+          if (validOptions.length > 0) {
+            // Select 1-3 random options
+            const numToSelect = Math.min(
+              Math.floor(Math.random() * 3) + 1,
+              validOptions.length
+            );
+            
+            const shuffled = validOptions.sort(() => Math.random() - 0.5);
+            shuffled.slice(0, numToSelect).forEach(opt => opt.selected = true);
+          }
+        });
+
+        // Randomize quality tags (select 8-12 random tags)
+        selectedQualityTags.clear();
+        const numQualityTags = Math.floor(Math.random() * 5) + 8; // 8-12 tags
+        const shuffledTags = qualityTags.sort(() => Math.random() - 0.5);
+        shuffledTags.slice(0, numQualityTags).forEach(tag => selectedQualityTags.add(tag));
+        initQualityTags();
+
+        // Generate prompt with randomized values
+        generatePrompt();
+        
+        if (loading) loading.classList.remove('active');
+        
+        showNotification('✨ Randomized successfully!', 'success');
+      } catch (error) {
+        console.error('Randomization error:', error);
+        if (loading) loading.classList.remove('active');
+        showNotification('Error during randomization', 'danger');
+      }
+    }, 800);
+  }
+
+  // ==================== AUTO-SAVE ====================
+  
+  /**
+   * Save current state to localStorage
+   */
+  function autoSave() {
+    try {
+      const saveData = {
+        timestamp: Date.now(),
+        values: {},
+        qualityTags: Array.from(selectedQualityTags)
+      };
+
+      // Save all form values
+      const allElements = document.querySelectorAll('select, textarea');
+      allElements.forEach(el => {
+        if (!el.id) return;
+        
+        if (el.tagName === 'SELECT' && el.multiple) {
+          saveData.values[el.id] = getMultiSelectValues(el.id);
+        } else {
+          saveData.values[el.id] = el.value;
+        }
+      });
+
+      localStorage.setItem('lastCharacterData', JSON.stringify(saveData));
+    } catch (error) {
+      console.error('Auto-save failed:', error);
+    }
+  }
+
+  /**
+   * Load last saved state from localStorage
+   */
+  function loadLastSaved() {
+    const saved = localStorage.getItem('lastCharacterData');
+    if (!saved) return false;
+
+    try {
+      const data = JSON.parse(saved);
+      
+      // Check if data is recent (within 7 days)
+      const daysSinceLastSave = (Date.now() - data.timestamp) / (1000 * 60 * 60 * 24);
+      if (daysSinceLastSave > 7) {
+        console.log('Saved data is too old, skipping load');
+        return false;
+      }
+
+      // Load values
+      Object.keys(data.values).forEach(id => {
+        const element = getElement(id);
+        if (!element) return;
+        
+        if (element.tagName === 'SELECT' && element.multiple) {
+          setMultiSelectValues(id, data.values[id]);
+        } else {
+          setSelectValue(id, data.values[id]);
+        }
+      });
+
+      // Load quality tags
+      if (data.qualityTags && Array.isArray(data.qualityTags)) {
+        selectedQualityTags = new Set(data.qualityTags);
+        initQualityTags();
+      }
+
+      console.log('✓ Last saved data loaded');
+      return true;
+    } catch (error) {
+      console.error('Failed to load saved data:', error);
+      return false;
+    }
+  }
+
+  // ==================== KEYBOARD SHORTCUTS ====================
+  
+  /**
+   * Handle keyboard shortcuts
+   */
+  function handleKeyboardShortcuts(e) {
+    // Ctrl/Cmd + Enter = Generate
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+      e.preventDefault();
+      generatePrompt();
+      return;
+    }
+
+    // Ctrl/Cmd + R = Randomize
+    if ((e.ctrlKey || e.metaKey) && e.key === 'r') {
+      e.preventDefault();
+      randomize();
+      return;
+    }
+
+    // Ctrl/Cmd + S = Save (auto-save)
+    if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+      e.preventDefault();
+      autoSave();
+      showNotification('✓ Progress saved!', 'info');
+      return;
+    }
+
+    // Escape = Close preview
+    if (e.key === 'Escape') {
+      const preview = getElement('previewCard');
+      if (preview && preview.style.display !== 'none') {
+        togglePreview();
+      }
+    }
+  }
+
+  // ==================== INITIALIZATION ====================
+  
+  /**
+   * Initialize the application
+   */
+  function initApp() {
+    try {
+      // Update stats display
+      const promptCountElement = getElement('promptCount');
+      const charCountElement = getElement('charCount');
+      
+      if (promptCountElement) promptCountElement.textContent = promptCount;
+      if (charCountElement) charCountElement.textContent = charCount;
+
+      // Initialize quality tags
+      initQualityTags();
+
+      // Setup smooth scrolling
+      document.documentElement.style.scrollBehavior = 'smooth';
+
+      // Auto-collapse cards (keep first one open)
+      const collapses = document.querySelectorAll('.collapse');
+      collapses.forEach((collapse, index) => {
+        if (index > 2) { // Keep first 3 open
+          collapse.classList.remove('show');
+        }
+      });
+
+      // Setup auto-save on changes
+      const autoSaveElements = document.querySelectorAll('select, textarea');
+      autoSaveElements.forEach(element => {
+        element.addEventListener('change', () => {
+          autoSave();
+          updatePreview();
+        });
+      });
+
+      // Setup keyboard shortcuts
+      document.addEventListener('keydown', handleKeyboardShortcuts);
+
+            // Load last saved data (optional - commented out by default)
+      // Uncomment the next line to enable auto-loading of last session
+      // const loaded = loadLastSaved();
+      // if (loaded) showNotification('Previous session restored', 'info');
+
+      // Show welcome message for first-time users
+      setTimeout(() => {
+        if (promptCount === 0) {
+          const welcomeMsg = `
+            <div style="text-align: left;">
+              <h6>👋 Welcome to the Advanced Male Character Prompt Generator!</h6>
+              <ul style="margin: 10px 0; padding-left: 20px;">
+                <li>✨ Click a <strong>Quick Preset</strong> to get started</li>
+                <li>🎲 Use <strong>Randomize</strong> for instant inspiration</li>
+                <li>👁️ Toggle <strong>Preview</strong> to see your character summary</li>
+                <li>⌨️ Keyboard shortcuts:
+                  <ul>
+                    <li><code>Ctrl+Enter</code> - Generate prompt</li>
+                    <li><code>Ctrl+R</code> - Randomize</li>
+                    <li><code>Ctrl+S</code> - Save progress</li>
+                    <li><code>Esc</code> - Close preview</li>
+                  </ul>
+                </li>
+              </ul>
+              <p><small>💾 Your progress auto-saves as you work!</small></p>
+            </div>
+          `;
+          
+          // Create custom modal
+          const modal = document.createElement('div');
+          modal.className = 'modal fade';
+          modal.innerHTML = `
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                  <h5 class="modal-title"><i class="fas fa-info-circle"></i> Quick Start Guide</h5>
+                  <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">${welcomeMsg}</div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Get Started!</button>
+                </div>
+              </div>
+            </div>
+          `;
+          document.body.appendChild(modal);
+          
+          const bsModal = new bootstrap.Modal(modal);
+          bsModal.show();
+          
+          // Remove modal after closing
+          modal.addEventListener('hidden.bs.modal', () => {
+            modal.remove();
+          });
+        }
+      }, 1500);
+
+      console.log('✓ Application initialized successfully');
+      
+    } catch (error) {
+      console.error('Initialization error:', error);
+      showNotification('Warning: Some features may not work correctly', 'warning');
+    }
+  }
+
+  // ==================== EVENT LISTENERS ====================
+  
+  // Initialize when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initApp);
+  } else {
+    initApp();
+  }
+
+  // Handle page visibility changes (pause auto-save when hidden)
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) {
+      console.log('Page visible - resuming');
+    }
+  });
+
+  // Warn before leaving if unsaved changes
+  window.addEventListener('beforeunload', (e) => {
+    const outputElement = getElement('output');
+    if (outputElement && outputElement.style.display === 'block' && outputElement.textContent) {
+      // Only show warning if there's a generated prompt
+      e.preventDefault();
+      e.returnValue = 'You have a generated prompt. Are you sure you want to leave?';
+      return e.returnValue;
+    }
+  });
+
+  // Handle orientation changes on mobile
+  window.addEventListener('orientationchange', () => {
+    setTimeout(() => {
+      window.scrollTo(0, 0);
+    }, 100);
+  });
+
+  // ==================== UTILITY EXPORTS (for console debugging) ====================
+  
+  // Expose some functions to window for debugging
+  window.debugGenerator = {
+    getStats: () => ({
+      promptCount,
+      charCount,
+      selectedQualityTags: Array.from(selectedQualityTags),
+      presetsAvailable: Object.keys(presets)
+    }),
+    resetStats: () => {
+      promptCount = 0;
+      charCount = 0;
+      localStorage.setItem('promptCount', '0');
+      localStorage.setItem('charCount', '0');
+      document.getElementById('promptCount').textContent = '0';
+      document.getElementById('charCount').textContent = '0';
+      console.log('✓ Stats reset');
+    },
+    clearSaved: () => {
+      localStorage.removeItem('lastCharacterData');
+      console.log('✓ Saved data cleared');
+    },
+    exportConfig: () => {
+      const config = {};
+      document.querySelectorAll('select, textarea').forEach(el => {
+        if (el.id) {
+          if (el.tagName === 'SELECT' && el.multiple) {
+            config[el.id] = getMultiSelectValues(el.id);
+          } else {
+            config[el.id] = el.value;
+          }
+        }
+      });
+      config.qualityTags = Array.from(selectedQualityTags);
+      console.log('Current configuration:', config);
+      return config;
+    },
+    importConfig: (config) => {
+      if (!config || typeof config !== 'object') {
+        console.error('Invalid configuration');
+        return;
+      }
+      Object.keys(config).forEach(key => {
+        if (key === 'qualityTags' && Array.isArray(config[key])) {
+          selectedQualityTags = new Set(config[key]);
+          initQualityTags();
+        } else if (Array.isArray(config[key])) {
+          setMultiSelectValues(key, config[key]);
+        } else {
+          setSelectValue(key, config[key]);
+        }
+      });
+      console.log('✓ Configuration imported');
+      generatePrompt();
+    }
+  };
+
+  // Log available debug commands
+  console.log('%c🎨 Character Generator Debug Tools', 'color: #7c3aed; font-size: 16px; font-weight: bold;');
+  console.log('%cAvailable commands:', 'color: #059669; font-weight: bold;');
+  console.log('  window.debugGenerator.getStats() - View current stats');
+  console.log('  window.debugGenerator.resetStats() - Reset counters');
+  console.log('  window.debugGenerator.clearSaved() - Clear saved data');
+  console.log('  window.debugGenerator.exportConfig() - Export current settings');
+  console.log('  window.debugGenerator.importConfig(config) - Import settings');
+
+</script>   
+
+</body>
+</html>
