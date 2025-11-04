@@ -1835,305 +1835,735 @@
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script>
-    // Global state
-    let currentPrompt = '';
-    let currentNegative = '';
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  'use strict';
 
-    // Quality badge toggle
-    document.addEventListener('DOMContentLoaded', function() {
+  // ============================================
+  // STATE MANAGEMENT
+  // ============================================
+  const AppState = {
+    currentPrompt: '',
+    currentNegative: '',
+    unsavedChanges: false,
+    generationCount: 0,
+    lastGenerated: null,
+    
+    // Cache DOM elements
+    elements: {},
+    
+    // History stack
+    history: [],
+    historyIndex: -1,
+    maxHistory: 20,
+
+    init() {
+      this.cacheElements();
+      this.loadFromLocalStorage();
+      this.attachEventListeners();
+      this.initializeQualityBadges();
+    },
+
+    cacheElements() {
+      // Cache frequently accessed elements
+      this.elements = {
+        previewCard: document.getElementById('previewCard'),
+        output: document.getElementById('output'),
+        negativeOutput: document.getElementById('negativeOutput'),
+        negativePromptCard: document.getElementById('negativePromptCard'),
+        stats: document.getElementById('stats'),
+        loading: document.getElementById('loading'),
+        copyNotification: document.getElementById('copyNotification'),
+        wordCount: document.getElementById('wordCount'),
+        charCount: document.getElementById('charCount'),
+        tokenCount: document.getElementById('tokenCount'),
+        
+        // Preview elements
+        prevArch: document.getElementById('prevArch'),
+        prevHair: document.getElementById('prevHair'),
+        prevEyes: document.getElementById('prevEyes'),
+        prevSkin: document.getElementById('prevSkin'),
+        prevBody: document.getElementById('prevBody'),
+        prevPose: document.getElementById('prevPose'),
+        prevLight: document.getElementById('prevLight'),
+        prevSpecial: document.getElementById('prevSpecial'),
+      };
+    },
+
+    attachEventListeners() {
+      // Form change listeners with debouncing
+      const selects = document.querySelectorAll('select, textarea, input');
+      selects.forEach(element => {
+        element.addEventListener('change', this.debounce(() => {
+          this.unsavedChanges = true;
+          this.updatePreview();
+        }, 150));
+      });
+
+      // Keyboard shortcuts
+      document.addEventListener('keydown', (e) => {
+        // Ctrl/Cmd + G: Generate
+        if ((e.ctrlKey || e.metaKey) && e.key === 'g') {
+          e.preventDefault();
+          generatePrompt();
+        }
+        // Ctrl/Cmd + C: Copy (when output visible)
+        if ((e.ctrlKey || e.metaKey) && e.key === 'c' && this.currentPrompt) {
+          e.preventDefault();
+          copyPrompt();
+        }
+        // Ctrl/Cmd + R: Reset
+        if ((e.ctrlKey || e.metaKey) && e.key === 'r') {
+          e.preventDefault();
+          resetAll();
+        }
+        // Ctrl/Cmd + Z: Undo
+        if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) {
+          e.preventDefault();
+          this.undo();
+        }
+        // Ctrl/Cmd + Shift + Z: Redo
+        if ((e.ctrlKey || e.metaKey) && e.key === 'z' && e.shiftKey) {
+          e.preventDefault();
+          this.redo();
+        }
+      });
+
+      // Before unload warning
+      window.addEventListener('beforeunload', (e) => {
+        if (this.unsavedChanges && this.currentPrompt) {
+          e.preventDefault();
+          e.returnValue = 'You have unsaved changes. Are you sure you want to leave?';
+          return e.returnValue;
+        }
+      });
+
+      // Auto-save every 30 seconds
+      setInterval(() => {
+        if (this.unsavedChanges) {
+          this.saveToLocalStorage();
+        }
+      }, 30000);
+    },
+
+    debounce(func, wait) {
+      let timeout;
+      return function executedFunction(...args) {
+        const later = () => {
+          clearTimeout(timeout);
+          func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+      };
+    },
+
+    initializeQualityBadges() {
       const badges = document.querySelectorAll('.quality-badge');
       badges.forEach(badge => {
-        badge.addEventListener('click', function() {
+        badge.addEventListener('click', function(e) {
+          e.preventDefault();
           this.classList.toggle('active');
-          updatePreview();
+          AppState.updatePreview();
+          AppState.unsavedChanges = true;
         });
       });
-    });
+    },
 
-    // Update preview in real-time
-    function updatePreview() {
-      const previewCard = document.getElementById('previewCard');
-      previewCard.style.display = 'block';
-
-      // Get values
-      const arch = document.getElementById('characterArchetype')?.value || 'Not set';
-      const hair = document.getElementById('hairStyle')?.value + ' ' + document.getElementById('hairColor')?.value || 'Not set';
-      const eyes = document.getElementById('eyeColor')?.value || 'Not set';
-      const skin = document.getElementById('skinTone')?.value + ' ' + document.getElementById('skinTexture')?.value || 'Not set';
-      const body = document.getElementById('muscleDef')?.value || 'Not set';
-      const pose = document.getElementById('bodyPose')?.value || 'Not set';
-      const light = document.getElementById('primaryLighting')?.value || 'Not set';
-      const special = getMultiSelectValues('supernatural').join(', ') || 'None';
-
-      // Update preview
-      document.getElementById('prevArch').textContent = arch.substring(0, 50) + '...';
-      document.getElementById('prevHair').textContent = hair.substring(0, 40) + '...';
-      document.getElementById('prevEyes').textContent = eyes.substring(0, 30) + '...';
-      document.getElementById('prevSkin').textContent = skin.substring(0, 40) + '...';
-      document.getElementById('prevBody').textContent = body.substring(0, 40) + '...';
-      document.getElementById('prevPose').textContent = pose.substring(0, 40) + '...';
-      document.getElementById('prevLight').textContent = light.substring(0, 40) + '...';
-      document.getElementById('prevSpecial').textContent = special.substring(0, 50) || 'None';
-    }
-
-    // Get multi-select values
-    function getMultiSelectValues(id) {
-      const select = document.getElementById(id);
-      if (!select) return [];
-      const selected = [];
-      for (let option of select.selectedOptions) {
-        if (option.value) selected.push(option.value);
-      }
-      return selected;
-    }
-
-    // Get active quality tags
-    function getActiveQualityTags() {
-      const activeBadges = document.querySelectorAll('.quality-badge.active');
-      return Array.from(activeBadges).map(badge => badge.dataset.tag);
-    }
-
-    // Generate complete prompt
-    function generatePrompt() {
-      // Show loading
-      document.getElementById('loading').classList.add('active');
-      
-      setTimeout(() => {
-        const promptParts = [];
-
-        // Quality tags first
-        const qualityTags = getActiveQualityTags();
-        if (qualityTags.length > 0) {
-          promptParts.push(qualityTags.join(', '));
-        }
-
-        // Character archetype
-        addIfValue(promptParts, 'characterArchetype');
-
-        // Age and build
-        addIfValue(promptParts, 'ageGroup');
-        addIfValue(promptParts, 'bodyFrame');
-
-        // Face
-        addIfValue(promptParts, 'faceType');
-        addIfValue(promptParts, 'facialHair');
-
-        // Hair
-        addIfValue(promptParts, 'hairStyle');
-        addIfValue(promptParts, 'hairColor');
-
-        // Eyes
-        addIfValue(promptParts, 'eyeColor');
-        addIfValue(promptParts, 'eyeDetail');
-
-        // Skin
-        addIfValue(promptParts, 'skinTone');
-        addIfValue(promptParts, 'skinTexture');
-
-        // Special features
-        addIfValue(promptParts, 'wings');
-        addMultiSelect(promptParts, 'supernatural');
-        addMultiSelect(promptParts, 'bodyMarks');
-
-        // Body
-        addIfValue(promptParts, 'torsoState');
-        addIfValue(promptParts, 'muscleDef');
-        addIfValue(promptParts, 'chest');
-        addIfValue(promptParts, 'shouldersArms');
-        addIfValue(promptParts, 'absDetail');
-
-        // Clothing
-        addIfValue(promptParts, 'outfit');
-        addMultiSelect(promptParts, 'accessories');
-
-        // Expression and pose
-        addIfValue(promptParts, 'expression');
-        addIfValue(promptParts, 'bodyPose');
-
-        // Camera
-        addIfValue(promptParts, 'cameraShot');
-        addIfValue(promptParts, 'cameraAngle');
-
-        // Environment
-        addIfValue(promptParts, 'background');
-
-        // Lighting system
-        addIfValue(promptParts, 'primaryLighting');
-        addIfValue(promptParts, 'lightingIntensity');
-        addIfValue(promptParts, 'lightDirection');
-        addIfValue(promptParts, 'colorTemperature');
-        addIfValue(promptParts, 'shadowStyle');
-        addIfValue(promptParts, 'lightingMood');
-        addMultiSelect(promptParts, 'atmosphericEffects');
-        addIfValue(promptParts, 'timeOfDay');
-        addIfValue(promptParts, 'weatherLighting');
-
-        // Weather
-        addIfValue(promptParts, 'weather');
-        addIfValue(promptParts, 'season');
-
-        // Effects
-        addMultiSelect(promptParts, 'doujinEffects');
-        addIfValue(promptParts, 'depthOfField');
-        addIfValue(promptParts, 'filmGrain');
-        addIfValue(promptParts, 'colorGrading');
-        addIfValue(promptParts, 'vignette');
-
-        // Custom tags
-        const customTags = document.getElementById('customTags')?.value.trim();
-        if (customTags) {
-          promptParts.push(customTags);
-        }
-
-        // Artist style
-        addIfValue(promptParts, 'artistStyle');
-        addIfValue(promptParts, 'renderEngine');
-
-        // Combine all parts
-        currentPrompt = promptParts.filter(p => p).join(', ');
-
-        // Generate negative prompt
-        const negativeInput = document.getElementById('negativeTags')?.value.trim();
-        currentNegative = negativeInput || 'low quality, worst quality, blurry, bad anatomy';
-
-        // Display outputs
-        document.getElementById('output').textContent = currentPrompt;
-        document.getElementById('output').style.display = 'block';
+    updatePreview() {
+      try {
+        if (!this.elements.previewCard) return;
         
-        document.getElementById('negativeOutput').textContent = currentNegative;
-        document.getElementById('negativePromptCard').style.display = 'block';
+        this.elements.previewCard.style.display = 'block';
 
-        // Calculate stats
-        const words = currentPrompt.split(/[\s,]+/).length;
-        const chars = currentPrompt.length;
-        const tokens = Math.ceil(words * 1.3); // Rough estimate
+        // Get values safely
+        const getValue = (id, defaultVal = 'Not set') => {
+          const el = document.getElementById(id);
+          return el?.value || defaultVal;
+        };
 
-        document.getElementById('wordCount').textContent = words;
-        document.getElementById('charCount').textContent = chars;
-        document.getElementById('tokenCount').textContent = tokens;
-        document.getElementById('stats').style.display = 'block';
+        const arch = getValue('characterArchetype');
+        const hairStyle = getValue('hairStyle');
+        const hairColor = getValue('hairColor');
+        const eyes = getValue('eyeColor');
+        const skinTone = getValue('skinTone');
+        const skinTexture = getValue('skinTexture');
+        const body = getValue('muscleDef');
+        const pose = getValue('bodyPose');
+        const light = getValue('primaryLighting');
+        const special = this.getMultiSelectValues('supernatural').join(', ') || 'None';
 
-        // Hide loading
-        document.getElementById('loading').classList.remove('active');
+        // Update preview with truncation
+        const truncate = (str, len) => str.length > len ? str.substring(0, len) + '...' : str;
 
-        // Scroll to output
-        document.getElementById('output').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      }, 800);
-    }
-
-    // Helper to add single select value
-    function addIfValue(arr, id) {
-      const element = document.getElementById(id);
-      if (element && element.value) {
-        arr.push(element.value);
+        this.elements.prevArch.textContent = truncate(arch, 50);
+        this.elements.prevHair.textContent = truncate(`${hairStyle} ${hairColor}`, 40);
+        this.elements.prevEyes.textContent = truncate(eyes, 30);
+        this.elements.prevSkin.textContent = truncate(`${skinTone} ${skinTexture}`, 40);
+        this.elements.prevBody.textContent = truncate(body, 40);
+        this.elements.prevPose.textContent = truncate(pose, 40);
+        this.elements.prevLight.textContent = truncate(light, 40);
+        this.elements.prevSpecial.textContent = truncate(special, 50);
+      } catch (error) {
+        console.error('Preview update error:', error);
+        this.showError('Failed to update preview');
       }
-    }
+    },
 
-    // Helper to add multi-select values
-    function addMultiSelect(arr, id) {
-      const values = getMultiSelectValues(id);
-      if (values.length > 0) {
-        arr.push(...values);
+    getMultiSelectValues(id) {
+      try {
+        const select = document.getElementById(id);
+        if (!select || !select.multiple) return [];
+        
+        return Array.from(select.selectedOptions)
+          .map(opt => opt.value)
+          .filter(val => val);
+      } catch (error) {
+        console.error(`Error getting multi-select values for ${id}:`, error);
+        return [];
       }
-    }
+    },
 
-    // Copy prompt to clipboard
-    function copyPrompt() {
-      if (!currentPrompt) {
-        alert('Please generate a prompt first!');
-        return;
+    getActiveQualityTags() {
+      try {
+        const activeBadges = document.querySelectorAll('.quality-badge.active');
+        return Array.from(activeBadges).map(badge => badge.dataset.tag);
+      } catch (error) {
+        console.error('Error getting quality tags:', error);
+        return ['masterpiece', 'best quality']; // fallback
+      }
+    },
+
+    saveState() {
+      if (this.historyIndex < this.history.length - 1) {
+        this.history = this.history.slice(0, this.historyIndex + 1);
       }
 
-      const fullText = `POSITIVE PROMPT:\n${currentPrompt}\n\nNEGATIVE PROMPT:\n${currentNegative}`;
-      
-      navigator.clipboard.writeText(fullText).then(() => {
-        // Show notification
-        const notification = document.getElementById('copyNotification');
-        notification.classList.add('show');
-        setTimeout(() => {
-          notification.classList.remove('show');
-        }, 3000);
-      }).catch(err => {
-        alert('Failed to copy: ' + err);
-      });
-    }
+      const state = this.captureState();
+      this.history.push(state);
 
-    // Reset all selections
-    function resetAll() {
-      if (confirm('Are you sure you want to reset all selections?')) {
-        // Reset all selects
-        document.querySelectorAll('select').forEach(select => {
-          select.selectedIndex = 0;
-        });
+      if (this.history.length > this.maxHistory) {
+        this.history.shift();
+      } else {
+        this.historyIndex++;
+      }
+    },
 
-        // Reset textareas
-        document.querySelectorAll('textarea').forEach(textarea => {
-          if (textarea.id !== 'negativeTags') {
-            textarea.value = '';
-          }
-        });
-
-        // Reset quality badges to default active ones
-        document.querySelectorAll('.quality-badge').forEach(badge => {
-          const tag = badge.dataset.tag;
-          if (['masterpiece', 'best quality', 'very aesthetic', 'absurdres', 'detailed'].includes(tag)) {
-            badge.classList.add('active');
+    captureState() {
+      const state = {};
+      document.querySelectorAll('select, textarea, input').forEach(el => {
+        if (el.id) {
+          if (el.multiple) {
+            state[el.id] = Array.from(el.selectedOptions).map(opt => opt.value);
           } else {
-            badge.classList.remove('active');
+            state[el.id] = el.value;
           }
+        }
+      });
+
+      // Capture quality badges
+      state.qualityBadges = this.getActiveQualityTags();
+
+      return state;
+    },
+
+    restoreState(state) {
+      if (!state) return;
+
+      Object.entries(state).forEach(([id, value]) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+
+        if (el.multiple && Array.isArray(value)) {
+          Array.from(el.options).forEach(opt => {
+            opt.selected = value.includes(opt.value);
+          });
+        } else if (id !== 'qualityBadges') {
+          el.value = value;
+        }
+      });
+
+      // Restore quality badges
+      if (state.qualityBadges) {
+        document.querySelectorAll('.quality-badge').forEach(badge => {
+          badge.classList.toggle('active', state.qualityBadges.includes(badge.dataset.tag));
         });
-
-        // Hide outputs
-        document.getElementById('output').style.display = 'none';
-        document.getElementById('stats').style.display = 'none';
-        document.getElementById('negativePromptCard').style.display = 'none';
-        document.getElementById('previewCard').style.display = 'none';
-
-        currentPrompt = '';
-        currentNegative = '';
       }
+
+      this.updatePreview();
+    },
+
+    undo() {
+      if (this.historyIndex > 0) {
+        this.historyIndex--;
+        this.restoreState(this.history[this.historyIndex]);
+        this.showNotification('Undo successful', 'info');
+      }
+    },
+
+    redo() {
+      if (this.historyIndex < this.history.length - 1) {
+        this.historyIndex++;
+        this.restoreState(this.history[this.historyIndex]);
+        this.showNotification('Redo successful', 'info');
+      }
+    },
+
+    saveToLocalStorage() {
+      try {
+        const state = this.captureState();
+        localStorage.setItem('characterPromptState', JSON.stringify({
+          state,
+          timestamp: Date.now(),
+          version: '1.0'
+        }));
+        this.unsavedChanges = false;
+        console.log('State saved to localStorage');
+      } catch (error) {
+        console.error('Failed to save state:', error);
+      }
+    },
+
+    loadFromLocalStorage() {
+      try {
+        const saved = localStorage.getItem('characterPromptState');
+        if (saved) {
+          const { state, timestamp } = JSON.parse(saved);
+          
+          // Only load if less than 7 days old
+          const sevenDays = 7 * 24 * 60 * 60 * 1000;
+          if (Date.now() - timestamp < sevenDays) {
+            this.restoreState(state);
+            this.showNotification('Previous session restored', 'success');
+          }
+        }
+      } catch (error) {
+        console.error('Failed to load state:', error);
+      }
+    },
+
+    showNotification(message, type = 'success') {
+      const notification = this.elements.copyNotification;
+      if (!notification) return;
+
+      notification.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'info-circle'}"></i> ${message}`;
+      notification.style.backgroundColor = type === 'success' ? '#059669' : '#0369a1';
+      notification.classList.add('show');
+
+      setTimeout(() => {
+        notification.classList.remove('show');
+      }, 3000);
+    },
+
+    showError(message) {
+      alert(`Error: ${message}\n\nPlease try again or refresh the page.`);
+    }
+  };
+
+  // ============================================
+  // PROMPT GENERATION
+  // ============================================
+  function generatePrompt() {
+    try {
+      // Save state before generation
+      AppState.saveState();
+      
+      // Show loading
+      if (AppState.elements.loading) {
+        AppState.elements.loading.classList.add('active');
+      }
+
+      setTimeout(() => {
+        try {
+          const promptParts = [];
+
+          // Quality tags first
+          const qualityTags = AppState.getActiveQualityTags();
+          if (qualityTags.length > 0) {
+            promptParts.push(qualityTags.join(', '));
+          }
+
+          // Helper function to add values
+          const addValue = (id) => {
+            const el = document.getElementById(id);
+            if (el?.value) {
+              promptParts.push(el.value.trim());
+            }
+          };
+
+          const addMultiple = (id) => {
+            const values = AppState.getMultiSelectValues(id);
+            if (values.length > 0) {
+              promptParts.push(...values);
+            }
+          };
+
+          // Character basics
+          addValue('characterArchetype');
+          addValue('ageGroup');
+          addValue('bodyFrame');
+
+          // Appearance
+          addValue('faceType');
+          addValue('facialHair');
+          addValue('hairStyle');
+          addValue('hairColor');
+          addValue('eyeColor');
+          addValue('eyeDetail');
+          addValue('skinTone');
+          addValue('skinTexture');
+
+          // Special features
+          addValue('wings');
+          addMultiple('supernatural');
+          addMultiple('bodyMarks');
+
+          // Body
+          addValue('torsoState');
+          addValue('muscleDef');
+          addValue('chest');
+          addValue('shouldersArms');
+          addValue('absDetail');
+
+          // Clothing
+          addValue('outfit');
+          addMultiple('accessories');
+
+          // Pose
+          addValue('expression');
+          addValue('bodyPose');
+          addValue('cameraShot');
+          addValue('cameraAngle');
+
+          // Environment
+          addValue('background');
+
+          // Lighting (comprehensive)
+          addValue('primaryLighting');
+          addValue('lightingIntensity');
+          addValue('lightDirection');
+          addValue('colorTemperature');
+          addValue('shadowStyle');
+          addValue('lightingMood');
+          addMultiple('atmosphericEffects');
+          addValue('timeOfDay');
+          addValue('weatherLighting');
+
+          // Weather
+          addValue('weather');
+          addValue('season');
+
+          // Effects
+          addMultiple('doujinEffects');
+          addValue('depthOfField');
+          addValue('filmGrain');
+          addValue('colorGrading');
+          addValue('vignette');
+
+          // Custom & advanced
+          const customTags = document.getElementById('customTags')?.value.trim();
+          if (customTags) {
+            promptParts.push(customTags);
+          }
+
+          addValue('artistStyle');
+          addValue('renderEngine');
+
+          // Clean and join
+          AppState.currentPrompt = promptParts
+            .filter(p => p && p.length > 0)
+            .map(p => p.trim())
+            .join(', ');
+
+          // Validate prompt
+          if (!AppState.currentPrompt || AppState.currentPrompt.length < 10) {
+            throw new Error('Prompt too short. Please select more options.');
+          }
+
+          // Generate negative prompt
+          const negativeInput = document.getElementById('negativeTags')?.value.trim();
+          AppState.currentNegative = negativeInput || 
+            'low quality, worst quality, blurry, bad anatomy, bad proportions, deformed, disfigured, mutation, extra limbs, missing limbs, ugly, gross proportions';
+
+          // Display output
+          if (AppState.elements.output) {
+            AppState.elements.output.textContent = AppState.currentPrompt;
+            AppState.elements.output.style.display = 'block';
+          }
+
+          if (AppState.elements.negativeOutput) {
+            AppState.elements.negativeOutput.textContent = AppState.currentNegative;
+          }
+
+          if (AppState.elements.negativePromptCard) {
+            AppState.elements.negativePromptCard.style.display = 'block';
+          }
+
+          // Calculate stats
+          const words = AppState.currentPrompt.split(/[\s,]+/).filter(w => w.length > 0);
+          const chars = AppState.currentPrompt.length;
+          const tokens = Math.ceil(words.length * 1.33); // More accurate token estimate
+
+          if (AppState.elements.wordCount) AppState.elements.wordCount.textContent = words.length;
+          if (AppState.elements.charCount) AppState.elements.charCount.textContent = chars;
+          if (AppState.elements.tokenCount) AppState.elements.tokenCount.textContent = tokens;
+          
+          if (AppState.elements.stats) {
+            AppState.elements.stats.style.display = 'block';
+          }
+
+          // Update state
+          AppState.generationCount++;
+          AppState.lastGenerated = new Date();
+          AppState.unsavedChanges = false;
+
+          // Save to localStorage
+          AppState.saveToLocalStorage();
+
+          // Hide loading
+          if (AppState.elements.loading) {
+            AppState.elements.loading.classList.remove('active');
+          }
+
+          // Scroll to output smoothly
+          AppState.elements.output?.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'nearest' 
+          });
+
+          // Success notification
+          AppState.showNotification(`Prompt generated! (${words.length} words, ~${tokens} tokens)`);
+
+        } catch (innerError) {
+          console.error('Generation error:', innerError);
+          AppState.elements.loading?.classList.remove('active');
+          AppState.showError(innerError.message);
+        }
+      }, 600);
+
+    } catch (error) {
+      console.error('Generate prompt error:', error);
+      AppState.showError('Failed to generate prompt: ' + error.message);
+    }
+  }
+
+  // ============================================
+  // COPY TO CLIPBOARD
+  // ============================================
+  async function copyPrompt() {
+    if (!AppState.currentPrompt) {
+      AppState.showError('Please generate a prompt first!');
+      return;
     }
 
-    // Randomize character
-    function randomize() {
-      // Randomly select from each dropdown
-      randomizeSelect('characterArchetype');
-      randomizeSelect('ageGroup');
-      randomizeSelect('bodyFrame');
-      randomizeSelect('faceType');
-      randomizeSelect('hairStyle');
-      randomizeSelect('hairColor');
-      randomizeSelect('eyeColor');
-      randomizeSelect('skinTone');
-      randomizeSelect('skinTexture');
-      randomizeSelect('muscleDef');
-      randomizeSelect('expression');
-      randomizeSelect('bodyPose');
-      randomizeSelect('background');
-      randomizeSelect('primaryLighting');
-      randomizeSelect('lightingMood');
+    try {
+      const fullText = `POSITIVE PROMPT:\n${AppState.currentPrompt}\n\nNEGATIVE PROMPT:\n${AppState.currentNegative}`;
+      
+      // Modern clipboard API
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(fullText);
+        AppState.showNotification('Prompt copied to clipboard!');
+      } else {
+        // Fallback for older browsers
+        const textarea = document.createElement('textarea');
+        textarea.value = fullText;
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        AppState.showNotification('Prompt copied to clipboard!');
+      }
 
-      updatePreview();
-      alert('Character randomized! Click "Generate Full Prompt" to see the result.');
+      // Analytics (optional)
+      console.log('Prompt copied:', {
+        length: AppState.currentPrompt.length,
+        timestamp: new Date().toISOString()
+      });
+
+    } catch (error) {
+      console.error('Copy error:', error);
+      AppState.showError('Failed to copy to clipboard. Please copy manually.');
+    }
+  }
+
+  // ============================================
+  // RESET FUNCTIONALITY
+  // ============================================
+  function resetAll() {
+    if (!confirm('Are you sure you want to reset all selections? This cannot be undone.')) {
+      return;
     }
 
-    function randomizeSelect(id) {
+    try {
+      // Save current state before reset
+      AppState.saveState();
+
+      // Reset all form elements
+      document.querySelectorAll('select').forEach(select => {
+        select.selectedIndex = 0;
+      });
+
+      document.querySelectorAll('textarea').forEach(textarea => {
+        if (textarea.id !== 'negativeTags') {
+          textarea.value = '';
+        }
+      });
+
+      document.querySelectorAll('input[type="text"]').forEach(input => {
+        input.value = '';
+      });
+
+      // Reset quality badges to defaults
+      const defaultTags = ['masterpiece', 'best quality', 'very aesthetic', 'absurdres', 'detailed'];
+      document.querySelectorAll('.quality-badge').forEach(badge => {
+        const isDefault = defaultTags.includes(badge.dataset.tag);
+               badge.classList.toggle('active', isDefault);
+      });
+
+      // Hide outputs
+      if (AppState.elements.output) AppState.elements.output.style.display = 'none';
+      if (AppState.elements.stats) AppState.elements.stats.style.display = 'none';
+      if (AppState.elements.negativePromptCard) AppState.elements.negativePromptCard.style.display = 'none';
+      if (AppState.elements.previewCard) AppState.elements.previewCard.style.display = 'none';
+
+      // Clear state
+      AppState.currentPrompt = '';
+      AppState.currentNegative = '';
+      AppState.unsavedChanges = false;
+
+      // Clear localStorage
+      localStorage.removeItem('characterPromptState');
+
+      AppState.showNotification('All selections reset!', 'info');
+
+      // Scroll to top
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    } catch (error) {
+      console.error('Reset error:', error);
+      AppState.showError('Failed to reset: ' + error.message);
+    }
+  }
+
+  // ============================================
+  // RANDOMIZE FUNCTIONALITY
+  // ============================================
+  function randomize() {
+    try {
+      // Save state before randomization
+      AppState.saveState();
+
+      const selectsToRandomize = [
+        'characterArchetype',
+        'ageGroup',
+        'bodyFrame',
+        'faceType',
+        'facialHair',
+        'hairStyle',
+        'hairColor',
+        'eyeColor',
+        'eyeDetail',
+        'skinTone',
+        'skinTexture',
+        'muscleDef',
+        'expression',
+        'bodyPose',
+        'cameraShot',
+        'cameraAngle',
+        'background',
+        'primaryLighting',
+        'lightingMood',
+        'outfit'
+      ];
+
+      let randomizedCount = 0;
+      selectsToRandomize.forEach(id => {
+        if (randomizeSelect(id)) {
+          randomizedCount++;
+        }
+      });
+
+      // Randomly select some multi-selects
+      randomizeMultiSelect('supernatural', 0.3); // 30% chance per option
+      randomizeMultiSelect('bodyMarks', 0.2);
+      randomizeMultiSelect('doujinEffects', 0.4);
+      randomizeMultiSelect('atmosphericEffects', 0.3);
+
+      // Randomize quality badges (keep some defaults)
+      const qualityBadges = document.querySelectorAll('.quality-badge');
+      qualityBadges.forEach(badge => {
+        const tag = badge.dataset.tag;
+        // Keep essential tags active
+        const essentialTags = ['masterpiece', 'best quality', 'detailed'];
+        if (essentialTags.includes(tag)) {
+          badge.classList.add('active');
+        } else {
+          // 60% chance to activate
+          badge.classList.toggle('active', Math.random() > 0.4);
+        }
+      });
+
+      AppState.updatePreview();
+      AppState.unsavedChanges = true;
+
+      AppState.showNotification(`Character randomized! (${randomizedCount} attributes changed)`, 'success');
+
+      // Optional: Scroll to a random tab to show variety
+      const tabs = ['#charTab', '#appearanceTab', '#bodyTab', '#poseTab', '#envTab', '#effectsTab'];
+      const randomTab = tabs[Math.floor(Math.random() * tabs.length)];
+      const tabButton = document.querySelector(`[data-bs-target="${randomTab}"]`);
+      if (tabButton) {
+        tabButton.click();
+      }
+
+    } catch (error) {
+      console.error('Randomize error:', error);
+      AppState.showError('Failed to randomize: ' + error.message);
+    }
+  }
+
+  function randomizeSelect(id) {
+    try {
       const select = document.getElementById(id);
-      if (!select) return;
-      
-      const options = Array.from(select.options).filter(opt => opt.value !== '');
-      if (options.length > 0) {
-        const randomOption = options[Math.floor(Math.random() * options.length)];
-        select.value = randomOption.value;
-      }
-    }
+      if (!select) return false;
 
-    // Preset loader
-    function loadPreset(presetName) {
-      resetAll();
-      
+      const options = Array.from(select.options).filter(opt => opt.value !== '');
+      if (options.length === 0) return false;
+
+      const randomOption = options[Math.floor(Math.random() * options.length)];
+      select.value = randomOption.value;
+      return true;
+    } catch (error) {
+      console.error(`Failed to randomize ${id}:`, error);
+      return false;
+    }
+  }
+
+  function randomizeMultiSelect(id, probability = 0.3) {
+    try {
+      const select = document.getElementById(id);
+      if (!select || !select.multiple) return;
+
+      Array.from(select.options).forEach(option => {
+        if (option.value) {
+          option.selected = Math.random() < probability;
+        }
+      });
+    } catch (error) {
+      console.error(`Failed to randomize multi-select ${id}:`, error);
+    }
+  }
+
+  // ============================================
+  // PRESET LOADER (ENHANCED)
+  // ============================================
+  function loadPreset(presetName) {
+    try {
+      // Save current state before loading preset
+      AppState.saveState();
+
       const presets = {
         'doujin_bishonen': {
           characterArchetype: '1boy solo male focus',
@@ -2143,109 +2573,768 @@
           hairStyle: 'long flowing hair windswept',
           hairColor: 'platinum blonde white',
           eyeColor: 'violet amethyst deep',
+          eyeDetail: 'big expressive eyes detailed',
           skinTone: 'fair pale porcelain',
           skinTexture: 'smooth flawless perfect skin',
           muscleDef: 'soft natural body',
           expression: 'gentle soft kind smile',
           bodyPose: 'elegant pose graceful refined',
+          cameraShot: 'cowboy shot mid-thigh up',
           primaryLighting: 'soft moonlight gentle',
-          doujinEffects: ['sparkles glitter effect magical', 'flower petals floating romantic']
+          lightingMood: 'ethereal dreamy soft',
+          background: 'simple background solid color',
+          doujinEffects: ['sparkles glitter effect magical', 'flower petals floating romantic', 'soft focus dreamy blur']
         },
         'doujin_muscular': {
           characterArchetype: '1boy solo male focus',
           ageGroup: 'young adult 20-25',
           bodyFrame: 'muscular powerful built',
+          faceType: 'chiseled angular jawline sharp',
+          facialHair: 'light stubble 5 o\'clock shadow',
+          hairStyle: 'short cropped neat military',
+          hairColor: 'deep brown chocolate',
+          eyeColor: 'dark brown deep chocolate',
+          skinTone: 'golden bronze sun-kissed',
+          skinTexture: 'wet skin dripping water droplets',
           torsoState: 'shirtless bare chest exposed',
           muscleDef: 'ripped shredded physique',
           chest: 'well developed pecs',
           absDetail: 'prominent six pack abs',
-          skinTexture: 'wet skin dripping water droplets',
+          shouldersArms: 'bulging massive arms veiny',
           expression: 'confident smirk arrogant',
           bodyPose: 'standing arms crossed confident',
+          cameraShot: 'waist up medium shot',
+          cameraAngle: 'low angle looking up heroic',
           primaryLighting: 'dramatic lighting high contrast',
-          doujinEffects: ['water droplets dripping glistening', 'sweat beads glistening skin']
+          shadowStyle: 'hard shadows sharp edges',
+          lightingMood: 'dramatic cinematic epic',
+          background: 'simple background solid color',
+          doujinEffects: ['water droplets dripping glistening', 'sweat beads glistening skin'],
+          depthOfField: 'shallow depth of field bokeh'
         },
         'supernatural_fox': {
           characterArchetype: '1boy solo male focus supernatural hunter tracking creatures',
-          supernatural: ['fox ears kemonomimi', 'many fox tails kitsune nine'],
+          ageGroup: 'young adult 20-25',
+          bodyFrame: 'lithe agile nimble',
+          faceType: 'sharp defined features striking',
+          hairStyle: 'long flowing hair windswept',
           hairColor: 'silver white metallic',
           eyeColor: 'amber gold glowing',
+          eyeDetail: 'glowing supernatural mystical',
+          skinTone: 'fair pale porcelain',
+          skinTexture: 'smooth flawless perfect skin',
+          supernatural: ['fox ears kemonomimi', 'many fox tails kitsune nine'],
           bodyMarks: ['glowing marks mystical runes'],
+          expression: 'mysterious brooding enigmatic',
+          bodyPose: 'dynamic pose action ready',
+          cameraShot: 'full body shot head to toe',
           primaryLighting: 'magical glow ethereal',
+          lightingMood: 'ethereal dreamy soft',
           background: 'forest lush green mystical',
-          doujinEffects: ['glowing aura surrounding body', 'ethereal glow soft halo']
+          doujinEffects: ['glowing aura surrounding body', 'ethereal glow soft halo', 'light particles shimmering ambient'],
+          atmosphericEffects: ['god rays crepuscular', 'fog diffused soft']
         },
         'wet_shower': {
-          torsoState: 'towel wrapped around waist shirtless',
+          characterArchetype: '1boy solo male focus',
+          ageGroup: 'young adult 20-25',
+          bodyFrame: 'lean athletic toned',
+          faceType: 'soft masculine gentle face',
+          hairStyle: 'wet slicked dripping',
+          hairColor: 'black hair raven',
+          eyeColor: 'dark brown deep chocolate',
+          skinTone: 'beige natural warm',
           skinTexture: 'soaking wet drenched',
+          torsoState: 'towel wrapped around waist shirtless',
+          muscleDef: 'toned defined muscles',
+          chest: 'defined pecs visible',
+          absDetail: 'visible defined abs',
+          expression: 'shy blushing embarrassed',
+          bodyPose: 'standing relaxed casual pose',
+          cameraShot: 'waist up medium shot',
           background: 'bathroom shower steam',
           primaryLighting: 'soft lighting gentle diffused',
+          lightingIntensity: 'soft lighting gentle diffused',
+          colorTemperature: 'warm white cozy 3000K',
           atmosphericEffects: ['steam backlit shower'],
-          doujinEffects: ['water droplets dripping glistening', 'condensation humid atmosphere'],
-          muscleDef: 'toned defined muscles'
+          doujinEffects: ['water droplets dripping glistening', 'condensation humid atmosphere', 'soft focus dreamy blur'],
+          filmGrain: 'subtle film grain texture'
         },
         'cyberpunk_neon': {
           characterArchetype: '1boy solo male focus cyberpunk hacker tech implants',
+          ageGroup: 'young adult 20-25',
+          bodyFrame: 'lean athletic toned',
+          faceType: 'sharp defined features striking',
+          hairStyle: 'undercut shaved sides long top',
           hairColor: 'electric blue neon',
           eyeColor: 'glowing bright luminous',
+          eyeDetail: 'glowing supernatural mystical',
+          skinTone: 'fair pale porcelain',
+          skinTexture: 'smooth flawless perfect skin',
           bodyMarks: ['cybernetic implants tech'],
           outfit: 'cyberpunk neon streetwear techwear',
+          accessories: ['gloves elegant leather'],
+          expression: 'intense focused piercing gaze',
+          bodyPose: 'standing leaning against wall',
+          cameraShot: 'cowboy shot mid-thigh up',
+          cameraAngle: 'dutch angle tilted dynamic',
           background: 'neon lit cyberpunk city',
           primaryLighting: 'neon underglow',
           colorTemperature: 'pink and blue vaporwave',
-          doujinEffects: ['neon glow edges cyberpunk', 'holographic shimmer iridescent']
+          lightingMood: 'moody atmospheric dramatic',
+          timeOfDay: 'night dark',
+          doujinEffects: ['neon glow edges cyberpunk', 'holographic shimmer iridescent', 'glitch effect digital'],
+          atmosphericEffects: ['fog diffused soft'],
+          depthOfField: 'shallow depth of field bokeh',
+          colorGrading: 'teal and orange cinematic'
         },
         'vampire_elegant': {
           characterArchetype: '1boy solo male focus ancient vampire immortal elegant',
           ageGroup: 'ageless timeless immortal',
+          bodyFrame: 'tall slender graceful',
           faceType: 'refined elegant noble',
+          hairStyle: 'long flowing hair windswept',
           hairColor: 'jet black dark',
           eyeColor: 'blood red crimson',
+          eyeDetail: 'sharp intense gaze piercing',
           skinTone: 'fair pale porcelain',
+          skinTexture: 'porcelain smooth polished',
           supernatural: ['fangs vampire sharp'],
           outfit: 'gothic dark elegant victorian',
+          accessories: ['cape flowing dramatic billowing'],
           expression: 'mysterious brooding enigmatic',
+          bodyPose: 'elegant pose graceful refined',
+          cameraShot: 'full body shot head to toe',
+          cameraAngle: 'low angle looking up heroic',
+          background: 'gothic cathedral dark',
           primaryLighting: 'soft moonlight gentle',
           lightingMood: 'dark brooding ominous',
-          background: 'gothic cathedral dark'
+          shadowStyle: 'dramatic shadows high contrast',
+          timeOfDay: 'midnight deep night',
+          doujinEffects: ['ethereal glow soft halo'],
+          atmosphericEffects: ['fog diffused soft', 'god rays crepuscular'],
+          depthOfField: 'shallow depth of field bokeh',
+          colorGrading: 'desaturated muted colors'
         }
       };
 
       const preset = presets[presetName];
-      if (!preset) return;
+      if (!preset) {
+        throw new Error(`Preset "${presetName}" not found`);
+      }
+
+      // Reset first
+      document.querySelectorAll('select').forEach(select => select.selectedIndex = 0);
+      document.querySelectorAll('textarea:not(#negativeTags)').forEach(ta => ta.value = '');
 
       // Apply preset values
-      for (let [key, value] of Object.entries(preset)) {
+      Object.entries(preset).forEach(([key, value]) => {
         const element = document.getElementById(key);
-        if (!element) continue;
+        if (!element) return;
 
-        if (element.multiple && Array.isArray(value)) {
-          // Handle multi-select
-          for (let option of element.options) {
-            option.selected = value.includes(option.value);
+        try {
+          if (element.multiple && Array.isArray(value)) {
+            // Handle multi-select
+            Array.from(element.options).forEach(option => {
+              option.selected = value.includes(option.value);
+            });
+          } else if (element.tagName === 'SELECT' || element.tagName === 'TEXTAREA' || element.tagName === 'INPUT') {
+            element.value = value;
           }
-        } else {
-          element.value = value;
+        } catch (err) {
+          console.warn(`Failed to set ${key}:`, err);
+        }
+      });
+
+      AppState.updatePreview();
+      AppState.unsavedChanges = true;
+
+      // Scroll to top
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      AppState.showNotification(`Preset "${presetName.replace(/_/g, ' ')}" loaded successfully!`, 'success');
+
+    } catch (error) {
+      console.error('Preset load error:', error);
+      AppState.showError(`Failed to load preset: ${error.message}`);
+    }
+  }
+
+  // ============================================
+  // EXPORT/IMPORT FUNCTIONALITY
+  // ============================================
+  function exportCharacter() {
+    try {
+      const state = AppState.captureState();
+      const exportData = {
+        version: '1.0',
+        timestamp: new Date().toISOString(),
+        characterData: state,
+        prompt: AppState.currentPrompt,
+        negativePrompt: AppState.currentNegative
+      };
+
+      const dataStr = JSON.stringify(exportData, null, 2);
+      const dataBlob = new Blob([dataStr], { type: 'application/json' });
+      const url = URL.createObjectURL(dataBlob);
+
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `character-${Date.now()}.json`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+
+      AppState.showNotification('Character exported successfully!');
+    } catch (error) {
+      console.error('Export error:', error);
+      AppState.showError('Failed to export character');
+    }
+  }
+
+  function importCharacter() {
+    try {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = '.json';
+
+      input.onchange = async (e) => {
+        try {
+          const file = e.target.files[0];
+          if (!file) return;
+
+          const text = await file.text();
+          const data = JSON.parse(text);
+
+          if (!data.characterData) {
+                       throw new Error('Invalid character file format');
+          }
+
+          // Save current state before import
+          AppState.saveState();
+
+          // Restore imported state
+          AppState.restoreState(data.characterData);
+          
+          // Restore prompt if available
+          if (data.prompt) {
+            AppState.currentPrompt = data.prompt;
+            if (AppState.elements.output) {
+              AppState.elements.output.textContent = data.prompt;
+              AppState.elements.output.style.display = 'block';
+            }
+          }
+
+          if (data.negativePrompt) {
+            AppState.currentNegative = data.negativePrompt;
+            if (AppState.elements.negativeOutput) {
+              AppState.elements.negativeOutput.textContent = data.negativePrompt;
+            }
+          }
+
+          AppState.unsavedChanges = true;
+          AppState.showNotification('Character imported successfully!');
+
+        } catch (err) {
+          console.error('Import error:', err);
+          AppState.showError('Failed to import character: ' + err.message);
+        }
+      };
+
+      input.click();
+    } catch (error) {
+      console.error('Import setup error:', error);
+      AppState.showError('Failed to setup import');
+    }
+  }
+
+  // ============================================
+  // SHARE FUNCTIONALITY
+  // ============================================
+  async function shareCharacter() {
+    if (!AppState.currentPrompt) {
+      AppState.showError('Please generate a prompt first!');
+      return;
+    }
+
+    try {
+      const shareData = {
+        title: 'Character Prompt',
+        text: `Check out this character prompt!\n\n${AppState.currentPrompt.substring(0, 200)}...`,
+        url: window.location.href
+      };
+
+      if (navigator.share) {
+        await navigator.share(shareData);
+        AppState.showNotification('Shared successfully!');
+      } else {
+        // Fallback: copy link
+        await navigator.clipboard.writeText(window.location.href);
+        AppState.showNotification('Link copied to clipboard!');
+      }
+    } catch (error) {
+      if (error.name !== 'AbortError') {
+        console.error('Share error:', error);
+      }
+    }
+  }
+
+  // ============================================
+  // ANALYTICS & STATISTICS
+  // ============================================
+  function getUsageStats() {
+    return {
+      generationCount: AppState.generationCount,
+      lastGenerated: AppState.lastGenerated,
+      sessionStart: AppState.sessionStart || new Date(),
+      historyLength: AppState.history.length,
+      currentPromptLength: AppState.currentPrompt.length
+    };
+  }
+
+  function showStatistics() {
+    const stats = getUsageStats();
+    const message = `
+📊 Session Statistics:
+━━━━━━━━━━━━━━━━━━━
+• Prompts Generated: ${stats.generationCount}
+• Last Generated: ${stats.lastGenerated ? stats.lastGenerated.toLocaleString() : 'Never'}
+• Session Duration: ${Math.round((new Date() - stats.sessionStart) / 60000)} minutes
+• History Items: ${stats.historyLength}
+• Current Prompt: ${stats.currentPromptLength} characters
+    `.trim();
+
+    alert(message);
+  }
+
+  // ============================================
+  // KEYBOARD SHORTCUTS HELP
+  // ============================================
+  function showKeyboardShortcuts() {
+    const shortcuts = `
+⌨️ Keyboard Shortcuts:
+━━━━━━━━━━━━━━━━━━━━━━━━━
+Ctrl/Cmd + G  →  Generate Prompt
+Ctrl/Cmd + C  →  Copy Prompt
+Ctrl/Cmd + R  →  Reset All
+Ctrl/Cmd + Z  →  Undo
+Ctrl/Cmd + Shift + Z  →  Redo
+Ctrl/Cmd + S  →  Save State
+Ctrl/Cmd + E  →  Export Character
+Ctrl/Cmd + I  →  Import Character
+Ctrl/Cmd + /  →  Show This Help
+    `.trim();
+
+    alert(shortcuts);
+  }
+
+  // ============================================
+  // ADDITIONAL KEYBOARD SHORTCUTS
+  // ============================================
+  document.addEventListener('keydown', (e) => {
+    // Ctrl/Cmd + S: Save
+    if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+      e.preventDefault();
+      AppState.saveToLocalStorage();
+      AppState.showNotification('State saved!', 'success');
+    }
+
+    // Ctrl/Cmd + E: Export
+    if ((e.ctrlKey || e.metaKey) && e.key === 'e') {
+      e.preventDefault();
+      exportCharacter();
+    }
+
+    // Ctrl/Cmd + I: Import
+    if ((e.ctrlKey || e.metaKey) && e.key === 'i') {
+      e.preventDefault();
+      importCharacter();
+    }
+
+    // Ctrl/Cmd + /: Help
+    if ((e.ctrlKey || e.metaKey) && e.key === '/') {
+      e.preventDefault();
+      showKeyboardShortcuts();
+    }
+
+    // Ctrl/Cmd + K: Statistics
+    if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+      e.preventDefault();
+      showStatistics();
+    }
+  });
+
+  // ============================================
+  // PROMPT VALIDATION
+  // ============================================
+  function validatePrompt(prompt) {
+    const issues = [];
+
+    if (!prompt || prompt.trim().length === 0) {
+      issues.push('Prompt is empty');
+    }
+
+    if (prompt.length < 20) {
+      issues.push('Prompt is too short (minimum 20 characters)');
+    }
+
+    if (prompt.length > 5000) {
+      issues.push('Prompt is too long (maximum 5000 characters)');
+    }
+
+    // Check for basic character description
+    const hasCharacter = /\b(1boy|male|man|character)\b/i.test(prompt);
+    if (!hasCharacter) {
+      issues.push('Missing character descriptor (1boy, male, etc.)');
+    }
+
+    // Check for quality tags
+    const hasQuality = /(masterpiece|best quality|detailed|high quality)/i.test(prompt);
+    if (!hasQuality) {
+      issues.push('Consider adding quality tags');
+    }
+
+    return {
+      valid: issues.length === 0,
+      issues: issues,
+      score: Math.max(0, 100 - (issues.length * 20))
+    };
+  }
+
+  // ============================================
+  // PROMPT ENHANCEMENT SUGGESTIONS
+  // ============================================
+  function suggestEnhancements() {
+    if (!AppState.currentPrompt) {
+      AppState.showError('Please generate a prompt first!');
+      return;
+    }
+
+    const suggestions = [];
+    const prompt = AppState.currentPrompt.toLowerCase();
+
+    // Check for missing elements
+    if (!prompt.includes('lighting')) {
+      suggestions.push('💡 Add lighting information for better atmosphere');
+    }
+
+    if (!prompt.includes('background')) {
+      suggestions.push('🖼️ Consider adding a background setting');
+    }
+
+    if (!prompt.includes('pose') && !prompt.includes('standing') && !prompt.includes('sitting')) {
+      suggestions.push('🧍 Add a pose or stance for the character');
+    }
+
+    if (!prompt.includes('expression')) {
+      suggestions.push('😊 Add facial expression for more emotion');
+    }
+
+    if (!prompt.includes('detailed') && !prompt.includes('quality')) {
+      suggestions.push('⭐ Add quality enhancement tags');
+    }
+
+    if (prompt.split(',').length < 10) {
+      suggestions.push('📝 Prompt is quite short - consider adding more details');
+    }
+
+    const validation = validatePrompt(AppState.currentPrompt);
+    
+    let message = `
+🎨 Prompt Enhancement Suggestions
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Quality Score: ${validation.score}/100
+
+${suggestions.length > 0 ? suggestions.join('\n\n') : '✅ Your prompt looks great!'}
+
+${validation.issues.length > 0 ? '\n⚠️ Issues:\n' + validation.issues.join('\n') : ''}
+    `.trim();
+
+    alert(message);
+  }
+
+  // ============================================
+  // TOKEN CALCULATOR (ADVANCED)
+  // ============================================
+  function calculateTokens(text) {
+    // More accurate token estimation
+    // Average: 1 token ≈ 0.75 words for English
+    const words = text.split(/[\s,]+/).filter(w => w.length > 0);
+    const commas = (text.match(/,/g) || []).length;
+    const specialChars = (text.match(/[()[\]{}]/g) || []).length;
+
+    const baseTokens = Math.ceil(words.length * 1.33);
+    const punctuationTokens = Math.ceil(commas * 0.5);
+    const specialTokens = specialChars;
+
+    return {
+      total: baseTokens + punctuationTokens + specialTokens,
+      words: words.length,
+      characters: text.length,
+      commas: commas,
+      estimate: 'Based on GPT-style tokenization'
+    };
+  }
+
+  // ============================================
+  // PROMPT OPTIMIZER
+  // ============================================
+  function optimizePrompt() {
+    if (!AppState.currentPrompt) {
+      AppState.showError('Please generate a prompt first!');
+      return;
+    }
+
+    try {
+      let optimized = AppState.currentPrompt;
+
+      // Remove duplicate tags
+      const tags = optimized.split(',').map(t => t.trim());
+      const uniqueTags = [...new Set(tags)];
+      
+      // Remove empty tags
+      const cleanedTags = uniqueTags.filter(t => t.length > 0);
+
+      // Sort: quality tags first, then character, then details
+      const qualityTags = cleanedTags.filter(t => 
+        /masterpiece|quality|detailed|absurdres|aesthetic/.test(t)
+      );
+      const characterTags = cleanedTags.filter(t => 
+        /1boy|male|character|solo/.test(t)
+      );
+      const otherTags = cleanedTags.filter(t => 
+        !qualityTags.includes(t) && !characterTags.includes(t)
+      );
+
+      optimized = [...qualityTags, ...characterTags, ...otherTags].join(', ');
+
+      // Update
+      AppState.currentPrompt = optimized;
+      AppState.elements.output.textContent = optimized;
+
+      // Recalculate stats
+      const tokens = calculateTokens(optimized);
+      if (AppState.elements.wordCount) AppState.elements.wordCount.textContent = tokens.words;
+      if (AppState.elements.charCount) AppState.elements.charCount.textContent = tokens.characters;
+      if (AppState.elements.tokenCount) AppState.elements.tokenCount.textContent = tokens.total;
+
+      AppState.showNotification('Prompt optimized! Removed duplicates and reorganized.', 'success');
+
+    } catch (error) {
+      console.error('Optimization error:', error);
+      AppState.showError('Failed to optimize prompt');
+    }
+  }
+
+  // ============================================
+  // COMPARE WITH PREVIOUS
+  // ============================================
+  function compareWithPrevious() {
+    if (AppState.history.length < 2) {
+      AppState.showError('Not enough history to compare');
+      return;
+    }
+
+    const current = AppState.captureState();
+    const previous = AppState.history[AppState.historyIndex - 1];
+
+    const changes = [];
+    Object.keys(current).forEach(key => {
+      if (current[key] !== previous[key]) {
+        changes.push({
+          field: key,
+          from: previous[key],
+          to: current[key]
+        });
+      }
+    });
+
+    if (changes.length === 0) {
+      alert('No changes detected from previous state');
+      return;
+    }
+
+    const message = `
+📊 Changes from Previous Version:
+━━━━━━━━━━━━━━━━━━━━━━━━━
+${changes.slice(0, 10).map(c => `• ${c.field}: "${c.from}" → "${c.to}"`).join('\n')}
+${changes.length > 10 ? `\n... and ${changes.length - 10} more changes` : ''}
+    `.trim();
+
+    alert(message);
+  }
+
+  // ============================================
+  // AUTO-COMPLETE SUGGESTIONS
+  // ============================================
+  function setupAutoComplete() {
+    const customTagsInput = document.getElementById('customTags');
+    if (!customTagsInput) return;
+
+    const commonTags = [
+      'detailed eyes', 'detailed hair', 'detailed clothing',
+      'fantasy armor', 'magical effects', 'glowing weapons',
+      'dramatic pose', 'dynamic angle', 'cinematic lighting',
+      'depth of field', 'bokeh background', 'lens flare',
+      'particle effects', 'motion blur', 'speed lines'
+    ];
+
+    // Create datalist for suggestions
+    const datalist = document.createElement('datalist');
+    datalist.id = 'tagSuggestions';
+    commonTags.forEach(tag => {
+      const option = document.createElement('option');
+      option.value = tag;
+      datalist.appendChild(option);
+    });
+    document.body.appendChild(datalist);
+
+    customTagsInput.setAttribute('list', 'tagSuggestions');
+  }
+
+  // ============================================
+  // THEME TOGGLE (BONUS)
+  // ============================================
+  function toggleTheme() {
+    const isDark = document.body.classList.toggle('dark-theme');
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    AppState.showNotification(`${isDark ? 'Dark' : 'Light'} theme activated`, 'info');
+  }
+
+  function loadTheme() {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+      document.body.classList.add('dark-theme');
+    }
+  }
+
+  // ============================================
+  // PERFORMANCE MONITORING
+  // ============================================
+  const PerformanceMonitor = {
+    metrics: {
+      generateTime: [],
+      updatePreviewTime: [],
+      copyTime: []
+    },
+
+    measure(name, fn) {
+      const start = performance.now();
+      const result = fn();
+      const end = performance.now();
+      const duration = end - start;
+
+      if (this.metrics[name]) {
+        this.metrics[name].push(duration);
+        // Keep only last 10 measurements
+        if (this.metrics[name].length > 10) {
+          this.metrics[name].shift();
         }
       }
 
-      updatePreview();
-      
-      // Scroll to top
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      
-      alert(`Preset "${presetName.replace(/_/g, ' ')}" loaded! Review and customize, then click "Generate Full Prompt".`);
-    }
+      if (duration > 100) {
+        console.warn(`${name} took ${duration.toFixed(2)}ms (slow)`);
+      }
 
-    // Initialize
-    document.addEventListener('DOMContentLoaded', function() {
-      console.log('Advanced Male Character Prompt Generator Pro - Loaded');
-      
-      // Add change listeners to all form elements
-      document.querySelectorAll('select, textarea').forEach(element => {
-        element.addEventListener('change', updatePreview);
+      return result;
+    },
+
+    async measureAsync(name, fn) {
+      const start = performance.now();
+      const result = await fn();
+      const end = performance.now();
+      const duration = end - start;
+
+      if (this.metrics[name]) {
+        this.metrics[name].push(duration);
+        if (this.metrics[name].length > 10) {
+          this.metrics[name].shift();
+        }
+      }
+
+      return result;
+    },
+
+    getAverages() {
+      const averages = {};
+      Object.entries(this.metrics).forEach(([name, times]) => {
+        if (times.length > 0) {
+          averages[name] = (times.reduce((a, b) => a + b, 0) / times.length).toFixed(2);
+        }
       });
-    });
-  </script>
+      return averages;
+    },
+
+    report() {
+      console.log('Performance Report:', this.getAverages());
+    }
+  };
+
+  // ============================================
+  // INITIALIZATION
+  // ============================================
+  document.addEventListener('DOMContentLoaded', function() {
+    console.log('🎨 Advanced Male Character Prompt Generator Pro - Initializing...');
+
+    try {
+      // Initialize app state
+      AppState.sessionStart = new Date();
+      AppState.init();
+
+      // Setup additional features
+      setupAutoComplete();
+      loadTheme();
+
+      // Log initialization
+      console.log('✅ Application initialized successfully');
+      console.log('📊 Keyboard shortcuts available - Press Ctrl/Cmd + / for help');
+
+      // Performance monitoring in development
+      if (window.location.hostname === 'localhost') {
+        setInterval(() => {
+          PerformanceMonitor.report();
+        }, 60000); // Every minute
+      }
+
+    } catch (error) {
+      console.error('❌ Initialization error:', error);
+      alert('Failed to initialize application. Please refresh the page.');
+    }
+  });
+
+  // ============================================
+  // ERROR BOUNDARY
+  // ============================================
+  window.addEventListener('error', (event) => {
+    console.error('Global error:', event.error);
+    AppState.showError('An unexpected error occurred. Please try refreshing the page.');
+  });
+
+  window.addEventListener('unhandledrejection', (event) => {
+    console.error('Unhandled promise rejection:', event.reason);
+  });
+
+  // ============================================
+  // EXPOSE PUBLIC API
+  // ============================================
+  window.CharacterGenerator = {
+    generate: generatePrompt,
+    copy: copyPrompt,
+    reset: resetAll,
+    randomize: randomize,
+    export: exportCharacter,
+    import: importCharacter,
+    loadPreset: loadPreset,
+    optimize: optimizePrompt,
+    validate: () => validatePrompt(AppState.currentPrompt),
+    suggest: suggestEnhancements,
+    stats: getUsageStats,
+    share: shareCharacter,
+    toggleTheme: toggleTheme
+  };
+
+  console.log('🎮 Public API available: window.CharacterGenerator');
+</script>
+
 </body>
 </html>
